@@ -35,8 +35,7 @@ function get_sets()
 	end -- consider something for blu/dnc.  Shadows for nin, implement waltz/shadow stepdown
 	
 	-- initialize globals
-	local f = io.open('E:/Apps/Windower4/Addons/GearSwap/data/vars.RUN.txt','r')
-	--local f = io.open('data/vars.RUN.txt','r')
+	local f = io.open(windower.addon_path..'data/vars.RUN.txt','r')
 	default_weapon = {
 		main=f:read('*line'),
 		sub=f:read('*line')}
