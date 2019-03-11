@@ -2,75 +2,11 @@
 data/cor.RA.v3.lua
 data/cor.RA.lua
 data/cor.RA.v2.lua
-beta_examples_and_information/Advanced sets tables.txt
-beta_examples_and_information/Variables.xlsx
-beta_examples_and_information/Snprphnx_SCH.lua
-beta_examples_and_information/Byrth_WAR.lua
-beta_examples_and_information/Byrth_THF.lua
-beta_examples_and_information/Byrth_SMN.lua
-beta_examples_and_information/Byrth_SCH.lua
-beta_examples_and_information/Byrth_PLD.lua
-beta_examples_and_information/Byrth_MNK.lua
-beta_examples_and_information/Byrth_GEO.lua
-beta_examples_and_information/Byrth_DNC.lua
-beta_examples_and_information/Byrth_BRD.lua
-beta_examples_and_information/Byrth_BLM.lua
+beta_*
 data/cor.roller.lua
 data/cross.cor.lua
 data/Devestationx_Whm_Gear.lua
-data/export/debug.debug
-data/export/Jyouya 02 20 16AM  16-07-09.lua
-data/export/Jyouya 02 24 39AM  16-07-09.lua
-data/export/Jyouya 2017-06-11 15-00-06.lua
-data/export/Jyouya 2017-12-02 01-02-26.lua
-data/export/Jyouya 2017-12-02 01-03-13.lua
-data/export/Jyouya 2017-12-10 20-56-07.lua
-data/export/Jyouya 2017-12-15 19-17-33.lua
-data/export/Jyouya 2017-12-22 16-35-37.lua
-data/export/Jyouya 2017-12-25 23-23-15.lua
-data/export/Jyouya 2017-12-26 21-41-14.lua
-data/export/Jyouya 2017-12-31 00-30-53.lua
-data/export/Jyouya 2018-01-27 23-59-04.lua
-data/export/Jyouya 2018-01-28 00-02-05.lua
-data/export/Jyouya 2018-11-14 19-39-42.lua
-data/export/Jyouya 2018-11-27 16-54-13.lua
-data/export/Jyouya 2018-11-28 18-25-21.lua
-data/export/Jyouya 2018-11-30 14-53-45.lua
-data/export/Jyouya 2018-12-04 16-19-19.lua
-data/export/Jyouya 2018-12-04 16-24-23.lua
-data/export/Jyouya 2018-12-04 16-25-52.lua
-data/export/Jyouya 2018-12-04 16-28-32.lua
-data/export/Jyouya 2019-02-12 13-27-04.lua
-data/export/Jyouya 2019-02-14 14-39-59.lua
-data/export/Jyouya 2019-02-19 20-25-22.lua
-data/export/Jyouya 2019-02-25 13-13-29.lua
-data/export/Jyouya 2019-02-28 02-40-22.lua
-data/export/Jyouya 2019-03-08 17-27-00.lua
-data/export/Jyouyaya 2018-11-14 22-31-29.lua
-data/export/Jyouyaya 2018-11-26 18-07-31.lua
-data/export/Jyouyaya 2018-11-28 13-23-09.lua
-data/export/Jyouyaya 2018-12-27 21-12-51.lua
-data/export/Jyouyaya 2018-12-29 10-09-29.lua
-data/export/Jyouyaya 2018-12-30 14-23-57.lua
-data/export/Jyouyaya 2018-12-31 21-52-03.lua
-data/export/Jyouyaya 2018-12-31 21-52-08.lua
-data/export/Jyouyaya 2018-12-31 21-52-12.lua
-data/export/Jyouyaya 2018-12-31 21-52-22.lua
-data/export/Jyouyaya 2018-12-31 21-52-27.lua
-data/export/Jyouyaya 2018-12-31 21-52-31.lua
-data/export/Jyouyaya 2018-12-31 21-52-35.lua
-data/export/Jyouyaya 2018-12-31 23-36-47.lua
-data/export/Jyouyaya 2019-01-03 13-41-49.lua
-data/export/Jyouyaya 2019-01-04 01-53-40.lua
-data/export/Jyouyaya 2019-01-04 13-55-00.lua
-data/export/Jyouyaya 2019-01-07 13-14-39.lua
-data/export/Jyouyaya 2019-01-29 11-02-21.lua
-data/export/Jyouyaya 2019-01-29 13-56-02.lua
-data/export/Jyouyaya 2019-02-14 13-18-17.lua
-data/export/Jyouyaya 2019-02-24 17-44-27.lua
-data/export/Jyouyaya 2019-02-24 17-45-49.lua
-data/export/Jyouyaya 2019-03-10 11-09-04.lua
-data/export/Pokecenter 2019-03-08 00-15-11.lua
+data/export/*
 data/Instructions.txt
 data/lavi.cor.lua
 data/mage-function.lua
@@ -94,23 +30,9 @@ gearswap.lua
 helper_functions.lua
 libs/closetCleaner.lua
 libs/Modes.lua
-libs/Mote-documentation.txt
-libs/Mote-Globals.lua
-libs/Mote-Include.lua
-libs/Mote-Mappings.lua
-libs/Mote-SelfCommands.lua
-libs/Mote-TreasureHunter.lua
-libs/Mote-Utility.lua
+libs/Mote-*
 libs/organizer-lib.lua
-libs/rev1/Modes.lua
-libs/rev1/Mote-documentation.txt
-libs/rev1/Mote-Globals.lua
-libs/rev1/Mote-Include.lua
-libs/rev1/Mote-Mappings.lua
-libs/rev1/Mote-SelfCommands.lua
-libs/rev1/Mote-TreasureHunter.lua
-libs/rev1/Mote-Utility.lua
-libs/rev1/README.md
+libs/rev1/*
 libs/rnghelper_settings.xml
 libs/yayahelper.lua
 packet_parsing.lua
