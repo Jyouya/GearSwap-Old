@@ -251,7 +251,7 @@ function process_queue()
                 ['target'] = target,
                 ['action_type'] = 'Ability',
             }
-		elseif useAM and windower.ffxi.get_player().vitals.tp >= w.tp then
+		elseif useAM and w and windower.ffxi.get_player().vitals.tp >= w.tp then
 			pending = {
 				['prefix'] = '/weaponskill',
                 ['english'] = w.ws,
