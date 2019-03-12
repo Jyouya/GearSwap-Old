@@ -17,6 +17,7 @@ local pending = nil
 local enabled = true
 local midshot = false
 local timeout = 0
+local useAM = false
 
 local action_events = {
     [2] = 'mid /ra',
@@ -32,13 +33,13 @@ local action_events = {
     [15] = 'pre /ja',
 }
 
-local events_by_prefix = {
+--[[local events_by_prefix = {
 	['/range'] = 2,
 	['/weaponskill'] = 3,
 	['/magic'] = 4,
 	['/item'] = 5,
 	['/jobability'] = 6
-}
+}]]
 
 local terminal_action_events = {
     [2] = 'mid /ra',
@@ -153,6 +154,15 @@ local action_message_unable = {
     [717] = 717,
 }
 
+local aftermath_weaponskills = {
+	['Gastraphetes'] = {ws='Trueflight', tp=3000, buff=272},
+	['Death Penalty'] = {ws='Leaden Salute', tp=3000, buff=272},
+	['Armageddon'] = {ws='Wildfire', tp=3000, buff=272},
+	['Gandiva'] = {ws='Jishnu\'s Radiance', tp=3000, buff=272},
+	['Annihilator'] = {ws='Coronach', tp=1000, buff=273},
+	['Yoichinoyumi'] = {ws='Namas Arrow', tp=1000, buff=273}
+}
+
 local function load_profile(name, set_to_default)
     local profile = settings.profiles[name]
     for k, v in pairs(profile.cooldowns) do
@@ -233,13 +243,21 @@ function process_queue()
     elseif not queue:empty() then
         pending = queue:pop()
     elseif target then
-        if weaponskill and able_to_use_weaponskill() then
+		w = aftermath_weaponskills[player.equipment.range]
+        if weaponskill and able_to_use_weaponskill() and (not useAM or not w or isBuffActive(w.buff)) then
             pending = {
                 ['prefix'] = '/weaponskill',
                 ['english'] = weaponskill,
                 ['target'] = target,
                 ['action_type'] = 'Ability',
             }
+		elseif useAM and windower.ffxi.get_player().vitals.tp >= w.tp then
+			pending = {
+				['prefix'] = '/weaponskill',
+                ['english'] = w.ws,
+                ['target'] = target,
+                ['action_type'] = 'Ability',
+			}
         else
             pending = {
                 ['prefix'] = '/range',
@@ -252,6 +270,16 @@ function process_queue()
     if pending then
         process_pending_action()
     end
+end
+
+function isBuffActive(id)
+	local self = windower.ffxi.get_player()
+	for k,v in pairs( self.buffs ) do
+		if (v == id) then -- check for buff
+			return true
+		end	
+	end
+	return false
 end
 
 local function handle_interrupt() -- called when spell completes or is interrupted
@@ -413,6 +441,14 @@ register_unhandled_command(function (...)
 				else
 					windower.add_to_chat(200, "Rnghelper : Disabling")
 					enabled = false
+				end
+			elseif cmd:startswith('am') then
+				if T{'enable','on','true'}:contains(args[1]:lower()) then
+					windower.add_to_chat(200, "Rnghelper : Use Aftermath Enabled")
+					useAM = true
+				elseif T{'disable','off','false'}:contains(args[1]:lower()) then
+					windower.add_to_chat(200, "Rnghelper : Use Aftermath Disabled")
+					useAM = false
 				end
 			end
 		end
