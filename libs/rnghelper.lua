@@ -443,12 +443,14 @@ register_unhandled_command(function (...)
 					enabled = false
 				end
 			elseif cmd:startswith('am') then
-				if T{'enable','on','true'}:contains(args[1]:lower()) then
-					windower.add_to_chat(200, "Rnghelper : Use Aftermath Enabled")
-					useAM = true
-				elseif T{'disable','off','false'}:contains(args[1]:lower()) then
-					windower.add_to_chat(200, "Rnghelper : Use Aftermath Disabled")
-					useAM = false
+				if args[1] then
+					if T{'enable','on','true'}:contains(args[1]:lower()) then
+						windower.add_to_chat(200, "Rnghelper : Use Aftermath Enabled")
+						useAM = true
+					elseif T{'disable','off','false'}:contains(args[1]:lower()) then
+						windower.add_to_chat(200, "Rnghelper : Use Aftermath Disabled")
+						useAM = false
+					end
 				end
 			end
 		end
