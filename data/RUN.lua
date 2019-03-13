@@ -161,7 +161,7 @@ function get_sets()
 	
 	sets.idle.MaxHP = { -- for utu grip
 		ammo="Staunch Tathlum +1",
-		head="Turms Cap +3",
+		head="Turms Cap +1",
 		body="Futhark Coat +3",
 		hands="Regal Gauntlets",
 		legs="Erilaz Leg Guards +1",
