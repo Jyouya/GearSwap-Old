@@ -441,6 +441,7 @@ register_unhandled_command(function (...)
 				else
 					windower.add_to_chat(200, "Rnghelper : Disabling")
 					enabled = false
+					timeout = nil
 				end
 			elseif cmd:startswith('am') then
 				if args[1] then
