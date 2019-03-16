@@ -37,13 +37,16 @@ function get_sets()
 		['cure']	= handle_cure,
 		['save']	= save_weapons,
 		['QD']		= handle_qd,
-		['rollcall']= rollcall,
-		['roll1']	= handle_roll1,
-		['roll2']	= handle_roll2,
 		
-		['processQueue']	= processQueue,
-		['timeout']			= timeout,
-		['doPending']		= doPending,}
+		['face']	= handle_face,
+		--['rollcall']= rollcall,
+		--['roll1']	= handle_roll1,
+		--['roll2']	= handle_roll2,
+		
+		--['processQueue']	= processQueue,
+		--['timeout']			= timeout,
+		--['doPending']		= doPending,
+		}
 		
 	-- save our current weapons
 	save_weapons()
@@ -79,6 +82,7 @@ function get_sets()
 	midroll = false
 	
 	autofacetarget = true
+	rm_target = nil
 	moving = true
 	
 	herc = {}
@@ -163,7 +167,20 @@ function get_sets()
 	
 	sets.JA.Quickdraw = {}
 	sets.JA.Quickdraw.Damage = {}
-	sets.JA.Quickdraw.Accuracy = {}
+	sets.JA.Quickdraw.Accuracy = {
+		ammo="Living Bullet",
+		head="Oshosi Mask +1",
+		neck="Commodore Charm +2",
+		ear1="Gwati Earring",
+		ear2="Dignitary's Earring",
+		body="Mummu Jacket +2",
+		hands="Mummu Wrists +2",
+		ring1="Rahab Ring",
+		ring2="Kishar Ring",
+		back=Camulus.LeadenSalute,
+		waist="Kwahu Kachina Belt +1",
+		legs="Mummu Kecks +2",
+		feet="Oshosi Leggings +1",}
 	sets.JA.Quickdraw['Store TP'] = {
 		ammo="Living Bullet",
 		neck="Iskur Gorget",
@@ -180,9 +197,11 @@ function get_sets()
 	
 	sets.precast = {
 		head="Herculean Helm",
+		neck="Baetyl Pendant",
 		hands="Leyline Gloves",
+		ring1="Rahab Ring",
 		ring2="Kishar Ring",
-		back=Camulus.Fastcast}
+		back=Camulus.Fastcast,}
 		
 	sets.precast.Waltz = {}
 	
@@ -323,13 +342,13 @@ function get_sets()
 		})
 	
 	sets.WS['Last Stand'].Mid.fullTP = set_combine(sets.WS['Last Stand'].Mid, {
-		--ear1="Ishvara Earring",
+		ear1="Ishvara Earring",
 		})
 	
 	sets.WS['Last Stand'].Acc = set_combine(sets.WS['Last Stand'].Mid, {
-		--ring1="Hajduk Ring +1",
+		ring1="Hajduk Ring +1",
 		--ring2="Hajduk Ring +1",
-		--waist="K. Kachina Belt",
+		waist="K. Kachina Belt",
 		})
 	
 	sets.WS['Last Stand'].Acc.fullTP = set_combine(sets.WS['Last Stand'].Acc, {
@@ -495,7 +514,7 @@ function get_sets()
 		hands="Meghanada Gloves +2",
 		legs="Laskamana Trews +3",
 		feet="Meg. Jam. +2",
-		--waist="K. Kachina Belt +1",
+		waist="K. Kachina Belt +1",
 		ring1="Hajduk Ring +1",
 		ring2="Hajduk Ring +1",--Regal Ring
 		})
@@ -505,7 +524,7 @@ function get_sets()
 		body="Chasseur's Frac +1",
 		--hands="Lanun Gants +3",
 		--legs="Oshosi Trousers +1",
-		--feet="Oshosi Leggings +1",
+		feet="Oshosi Leggings +1",
 		}
 		
 	sets.idle = {
@@ -886,10 +905,6 @@ function gearinfo(cmdParams)
         end
 		if not moving then
 			local t = ft_target()
-			--if t and t.valid_target and not t.in_party and not bit.band(0xFF000000,t.id) then --t.id ~= player.id then
-			--print(bit.band(0xFF00000000,t.id))
-			--print(bit.tohex(t.id))
-			--print(bit.band(t.id,0xFF000000))
 			if t and bit.band(t.id,0xFF000000) ~= 0 then -- highest byte of target.id indicates whether it's a play or not
 				facetarget()
 			end
@@ -898,6 +913,10 @@ function gearinfo(cmdParams)
             update_gear()
         end
     end
+end
+
+function handle_face(target)
+	rm_target = tonumber(target)
 end
 
 function update_gear()
@@ -1027,7 +1046,11 @@ function precast(spell,action)
 				equip(sets.JA.Quickdraw.Damage)
 			end
 		else -- STP
-			equip(sets.JA.Quickdraw['Store TP'])			
+			if spell.name:contains('Light') or spell.name:contains('Dark') then
+				equip(sets.JA.Quickdraw.Accuracy)
+			else
+				equip(sets.JA.Quickdraw['Store TP'])
+			end
 		end
 		facetarget()
 		
@@ -1072,6 +1095,7 @@ function midcast(spell,action)
 end
 
 function aftercast(spell,action)
+	rm_target = nil
 	if not midroll then
 		equip(weapons)
 	end
@@ -1105,6 +1129,8 @@ function ft_target()
 	local rh = rh_status()
 	if rh.enabled and rh.target then
 		return windower.ffxi.get_mob_by_id(rh.target)
+	elseif rm_target then
+		return windower.ffxi.get_mob_by_id(rm_target)
 	else
 		return windower.ffxi.get_mob_by_target('t')
 	end
