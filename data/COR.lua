@@ -118,6 +118,7 @@ function get_sets()
 	Adhemar.Legs.PathC = { name="Adhemar Kecks +1", augments={'AGI+12','Rng.Acc.+20','Rng.Atk.+20',}}
 	Adhemar.Hands = {}
 	Adhemar.Hands.PathA = { name="Adhemar Wrist. +1", augments={'DEX+12','AGI+12','Accuracy+20',}}
+	Adhemar.Hands.PathC = { name="Adhemar Wrist. +1", augments={'AGI+12','Rng.Acc.+20','Rng.Atk.+20',}}
 														
 	-- CAPES --
 	Camulus = {}
@@ -187,7 +188,7 @@ function get_sets()
 		ear1="Enervating Earring",
 		ear2="Dignitary's Earring",
 		body="Mummu Jacket +2",
-		hands=Adhemar.Hands.PathA,
+		hands=Adhemar.Hands.PathC,
 		ring1="Chirich Ring +1",
 		ring2="Ilabrat Ring",
 		back=Camulus.Quickdraw,
@@ -490,7 +491,7 @@ function get_sets()
 		ammo="Chrono Bullet",
 		head="Meghanada Visor +2",
 		body="Mummu Jacket +2",
-		hands=Adhemar.Hands.PathA,
+		hands=Adhemar.Hands.PathC,
 		legs=Adhemar.Legs.PathC,
 		feet="Meg. Jam. +2",
 		neck="Iskur Gorget",
