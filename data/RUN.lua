@@ -1568,7 +1568,7 @@ function handle_sub(cmdParams)
 	end
 	add_to_chat(123,'Default sub set to '..default_weapon.sub)
 	
-	local f = io.open('E:/Apps/Windower4/Addons/GearSwap/data/vars.RUN.txt','w+')
+	local f = io.open(windower.addon_path..'data/vars.RUN.txt','w+')
 	f:write(default_weapon.main..'\n')
 	f:write(default_weapon.sub)
 	f:close()
