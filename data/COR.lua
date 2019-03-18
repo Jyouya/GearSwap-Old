@@ -1,4 +1,5 @@
 require('rnghelper')
+require('modes')
 --require('yayahelper')
 
 function get_sets()
@@ -11,27 +12,35 @@ function get_sets()
 	--setupRA()
 	
 	-- set keybinds
-	send_command('bind f9 gs c cycle Acc')
-	send_command('bind ^f9 gs c cycle RAcc')
-	send_command('bind !f9 gs c cycle MAcc')
-	send_command('bind @f9 gs c cycle HAcc')
+	send_command('bind f9 gs c cycle meleeAccuracy')
+	send_command('bind ^f9 gs c cycle rangedAccuracy')
+	send_command('bind !f9 gs c cycle magicAccuracy')
+	send_command('bind @f9 gs c cycle hotshotAccuracy')
 	
-	send_command('bind f10 gs c switch DT')
+	send_command('bind f10 gs c toggle emergancyDT')
+	send_command('bind ^f10 gs c cycle DDMode')
 	
-	send_command('bind f11 gs c cycle QDele')
-	send_command('bind ^f11 gs c cycle QDmode')
+	send_command('bind f11 gs c cycle quickdrawElement1')
+	send_command('bind ^f11 gs c cycleback quickdrawElement1')
+	send_command('bind !f11 gs c cycle quickdrawMode1')
 	
-	send_command('bind f12 gs c switch DD')
-	send_command('bind ^f12 gs c cycle DD')
-	send_command('bind !f12 gs c save')
+	send_command('bind f12 gs c cycle quickdrawElement2')
+	send_command('bind ^f12 gs c cycleback quickdrawElement2')
+	send_command('bind !f12 gs c cycle quickdrawMode2')
+	
+	send_command('bind ^- gs c cycle meleeWeapons')
+	send_command('bind ^= gs c cycle rangedWeapon')
 	
 	send_command('bind numpad0 input /ra <t>')
-	send_command('bind numpad. gs c QD')
+	send_command('bind numpad. gs c QD 1')
+	send_command('bind ^numpad. gs c QD 2')
 	
 	
 	selfCommandMaps = {
 		['switch']	= handle_switch,
+		['toggle']	= handle_toggle,
 		['cycle']	= handle_cycle,
+		['cycleback']	= handle_cycleback,
 		['update']	= update_gear,
 		['cursna']	= handle_cursna,
 		['cure']	= handle_cure,
@@ -39,37 +48,31 @@ function get_sets()
 		['QD']		= handle_qd,
 		
 		['face']	= handle_face,
-		--['rollcall']= rollcall,
-		--['roll1']	= handle_roll1,
-		--['roll2']	= handle_roll2,
-		
-		--['processQueue']	= processQueue,
-		--['timeout']			= timeout,
-		--['doPending']		= doPending,
 		}
-		
-	-- save our current weapons
-	save_weapons()
-	-- need to fundamentally change how this works sometime
-	-- have a MH toggle, rostam A, rostam B, savage sword, evisceration dagger
 	
-	cycle_table = {				-- {iterator, value, value, value}
-		['Melee Accuracy'] 		= {2,'Normal','Mid','Acc'},
-		['Ranged Accuracy'] 	= {2,'Normal','Mid','Acc'},
-		['Magic Accuracy'] 		= {2,'Normal','Mid','Acc'},
-		['Hotshot Accuracy']	= {2,'Normal','Mid','Acc'},
-		['Quickdraw Element']	= {2,'Fire','Earth','Water','Wind','Ice','Thunder','Light','Dark'},
-		['Quickdraw Mode']		= {2,'Damage / Accuracy','Store TP'},
-		['DD Mode']				= {2,'Normal','Hybrid'}}
-	cycle_shortcuts = {
-		Acc = 'Melee Accuracy',
-		RAcc = 'Ranged Accuracy',
-		MAcc = 'Magic Accuracy',
-		HAcc = 'Hotshot Accuracy',
-		QDele = 'Quickdraw Element',
-		QDmode = 'Quickdraw Mode',
-		DD = 'DD Mode'}
-	emergancy_DT = false
+	rangedWeapon = M{['description']='Ranged Weapon', 'Death Penalty', 'Armageddon', 'Fomalhaut', 'Anarchy +2'}
+	meleeWeapons = M{['description']='Melee Weapons', 'Rostam/Kaja', 'Rostam/Blurred', 'Rostam/Shield', 'Kaja/Blurred', 'Fettering/Shield', 'Rostam/Fettering'}
+	
+	weapontable = {
+		['Rostam/Kaja']={main='Rostam',sub='Kaja Knife'},
+		['Rostam/Blurred']={main='Rostam',sub='Blurred Knife +1'},
+		['Rostam/Shield']={main='Rostam',sub='Nusku Shield'},
+		['Kaja/Blurred']={main='Kaja Sword',sub='Blurred Knife +1'},
+		['Fettering/Shield']={main='Fettering Blade',sub='Nusku Shield'},
+		['Rostam/Fettering']={main='Rostam',sub='Fettering Blade'}
+		}
+	
+	meleeAccuracy = M{['description']='Melee Accuracy', 'Normal', 'Mid', 'Acc'}
+	rangedAccuracy = M{['description']='Ranged Accuracy', 'Normal', 'Mid', 'Acc'}
+	magicAccuracy = M{['description']='Magic Accuracy', 'Normal', 'Mid', 'Acc'}
+	hotshotAccuracy = M{['description']='Hotshot Accuracy', 'Normal', 'Mid', 'Acc'}
+	quickdrawElement1 = M{['description']='Primary Quickdraw Element', 'Fire', 'Earth', 'Water', 'Wind', 'Ice', 'Thunder', 'Light', 'Dark'}
+	quickdrawElement2 = M{['description']='Secondary Quickdraw Element', 'Dark', 'Fire', 'Earth', 'Water', 'Wind', 'Ice', 'Thunder', 'Light'}
+	quickdrawMode1 = M{['description']='Primary Quickdraw Mode', 'Damage', 'Store TP'}
+	quickdrawMode2 = M{['description']='Secondary Quickdraw Mode', 'Damage', 'Store TP'}
+	QDMode = 'Damage'
+	DDMode = M{['description']='DD Mode', 'Normal', 'Hybrid'}
+	emergancyDT = M(false,'Emegancy DT')
 	
 	DW_Needed = 11
 	DW = true
@@ -78,8 +81,6 @@ function get_sets()
 		[11] = 'DW11',
 		[74] = 'DW15',}	
 	flurry = 1
-	
-	midroll = false
 	
 	autofacetarget = true
 	rm_target = nil
@@ -317,7 +318,7 @@ function get_sets()
 	})
 	
 	sets.WS.Ranged.Acc = set_combine(sets.WS.Ranged.Mid, {
-		--ring1="Hajduk Ring +1",
+		ring1="Hajduk Ring +1",
 		--ring2="Hajduk Ring +1",
 		--ear2="Telos Earring",
 	})
@@ -353,7 +354,7 @@ function get_sets()
 		})
 	
 	sets.WS['Last Stand'].Acc.fullTP = set_combine(sets.WS['Last Stand'].Acc, {
-		--ear1="Ishvara Earring",
+		ear1="Ishvara Earring",
 		})
 		
 	sets.WS['Leaden Salute'] =  {
@@ -657,16 +658,22 @@ function file_unload() -- unbind hotkeys
 	send_command('unbind @f9')
 	
 	send_command('unbind f10')
+	send_command('unbind ^f10')
 	
 	send_command('unbind f11')
 	send_command('unbind ^f11')
+	send_command('unbind !f11')
 	
 	send_command('unbind f12')
 	send_command('unbind ^f12')
 	send_command('unbind !f12')
 	
+	send_command('unbind ^-')
+	send_command('unbind ^=')
+	
 	send_command('unbind numpad0')
 	send_command('unbind numpad.')
+	send_command('unbind ^numpad.')
 end
 
 function self_command(commandArgs)
@@ -690,17 +697,13 @@ function self_command(commandArgs)
 	
 end
 
-function handle_switch(cmdParams)
+function handle_toggle(cmdParams)
 	if #cmdParams == 0 then
 		return
 	end
-	if cmdParams[1] == 'DT' then
-		emergancy_DT = true
-		add_to_chat(123,'DT set on')
-	elseif cmdParams[1] == 'DD' then
-		emergancy_DT = false
-		add_to_chat(123,'DT set off')
-	end
+	mode = _G[cmdParams[1]]
+	mode:toggle()
+	add_to_chat(123,'%s set to %s':format(mode.description,tostring(mode.value)))
 	update_gear()
 end
 
@@ -709,110 +712,22 @@ function handle_cycle(cmdParams)
 		add_to_chat(123,'Cycle failure: field not specified.')
 		return
 	end
-	field = cycle_shortcuts[cmdParams[1]]
-	cycle_table[field][1] = cycle_table[field][1] + 1
-	if cycle_table[field][1] > #cycle_table[field] then
-		cycle_table[field][1] = 2
-	end
-	add_to_chat(123,field..' set to '..cycle_table[field][cycle_table[field][1]])
+	mode = _G[cmdParams[1]]
+	mode:cycle()
+	add_to_chat(123,'%s set to %s':format(mode.description,mode.value))
 	update_gear()
 end
 
-function handle_roll1(cmdParams)
-	local rollchange = false
-	if cmd[2] == nil then windower.add_to_chat(7,'Roll 1: '..Rollindex[Roll_ind_1]..'') return
-	elseif cmd[2]:lower():startswith("warlock") or cmd[2]:lower():startswith("macc") or cmd[2]:lower():startswith("magic ac") or cmd[2]:lower():startswith("rdm") then Roll_ind_1 = 5  rollchange = true
-	elseif cmd[2]:lower():startswith("fight") or cmd[2]:lower():startswith("double") or cmd[2]:lower():startswith("dbl") or cmd[2]:lower():startswith("war") then Roll_ind_1 = 1  rollchange = true
-	elseif cmd[2]:lower():startswith("monk") or cmd[2]:lower():startswith("subtle") or cmd[2]:lower():startswith("mnk") then Roll_ind_1 = 2  rollchange = true
-	elseif cmd[2]:lower():startswith("heal") or cmd[2]:lower():startswith("cure") or cmd[2]:lower():startswith("whm") then Roll_ind_1 = 3  rollchange = true
-	elseif cmd[2]:lower():startswith("wizard") or cmd[2]:lower():startswith("matk") or cmd[2]:lower():startswith("magic at") or cmd[2]:lower():startswith("blm") then Roll_ind_1 = 4  rollchange = true
-	elseif cmd[2]:lower():startswith("rogue") or cmd[2]:lower():startswith("crit") or cmd[2]:lower():startswith("thf") then Roll_ind_1 = 6  rollchange = true
-	elseif cmd[2]:lower():startswith("gallant") or cmd[2]:lower():startswith("def") or cmd[2]:lower():startswith("pld") then Roll_ind_1 = 7  rollchange = true
-	elseif cmd[2]:lower():startswith("chaos") or cmd[2]:lower():startswith("attack") or cmd[2]:lower():startswith("atk") or cmd[2]:lower():startswith("drk") then Roll_ind_1 = 8  rollchange = true
-	elseif cmd[2]:lower():startswith("beast") or cmd[2]:lower():startswith("pet at") or cmd[2]:lower():startswith("bst") then Roll_ind_1 = 9  rollchange = true
-	elseif cmd[2]:lower():startswith("choral") or cmd[2]:lower():startswith("inter") or cmd[2]:lower():startswith("spell inter") or cmd[2]:lower():startswith("brd") then Roll_ind_1 = 10  rollchange = true
-	elseif cmd[2]:lower():startswith("hunt") or cmd[2]:lower():startswith("acc") or  cmd[2]:lower():startswith("rng") then Roll_ind_1 = 11  rollchange = true
-	elseif cmd[2]:lower():startswith("sam") or cmd[2]:lower():startswith("stp") or cmd[2]:lower():startswith("store") then Roll_ind_1 = 12  rollchange = true
-	elseif cmd[2]:lower():startswith("nin") or cmd[2]:lower():startswith("eva") then Roll_ind_1 = 13  rollchange = true
-	elseif cmd[2]:lower():startswith("drach") or cmd[2]:lower():startswith("pet ac") or cmd[2]:lower():startswith("drg") then Roll_ind_1 = 14  rollchange = true
-	elseif cmd[2]:lower():startswith("evoke") or cmd[2]:lower():startswith("refresh") or cmd[2]:lower():startswith("smn") then Roll_ind_1 = 15  rollchange = true
-	elseif cmd[2]:lower():startswith("magus") or cmd[2]:lower():startswith("mdb") or cmd[2]:lower():startswith("magic d") or cmd[2]:lower():startswith("blu") then Roll_ind_1 = 16  rollchange = true
-	elseif cmd[2]:lower():startswith("cor") or cmd[2]:lower():startswith("exp") then Roll_ind_1 = 17  rollchange = true
-	elseif cmd[2]:lower():startswith("pup") or cmd[2]:lower():startswith("pet m") then Roll_ind_1 = 18  rollchange = true
-	elseif cmd[2]:lower():startswith("dance") or cmd[2]:lower():startswith("regen") or cmd[2]:lower():startswith("dnc") then Roll_ind_1 = 19  rollchange = true
-	elseif cmd[2]:lower():startswith("sch") or cmd[2]:lower():startswith("conserve m") then Roll_ind_1 = 20  rollchange = true
-	elseif cmd[2]:lower():startswith("bolt") or cmd[2]:lower():startswith("move") or cmd[2]:lower():startswith("flee") or cmd[2]:lower():startswith("speed") then Roll_ind_1 = 21  rollchange = true
-	elseif cmd[2]:lower():startswith("cast") or cmd[2]:lower():startswith("fast") or cmd[2]:lower():startswith("fc") then Roll_ind_1 = 22  rollchange = true
-	elseif cmd[2]:lower():startswith("course") or cmd[2]:lower():startswith("snap") then Roll_ind_1 = 23  rollchange = true
-	elseif cmd[2]:lower():startswith("blitz") or cmd[2]:lower():startswith("delay") then Roll_ind_1 = 24  rollchange = true
-	elseif cmd[2]:lower():startswith("tact") or cmd[2]:lower():startswith("regain") then Roll_ind_1 = 25  rollchange = true
-	elseif cmd[2]:lower():startswith("all") or cmd[2]:lower():startswith("skillchain") then Roll_ind_1 = 26  rollchange = true
-	elseif cmd[2]:lower():startswith("miser") or cmd[2]:lower():startswith("save tp") or cmd[2]:lower():startswith("conserve t") then Roll_ind_1 = 27  rollchange = true
-	elseif cmd[2]:lower():startswith("companion") or cmd[2]:lower():startswith("pet r") then Roll_ind_1 = 28  rollchange = true
-	elseif cmd[2]:lower():startswith("avenge") or cmd[2]:lower():startswith("counter") then Roll_ind_1 = 29  rollchange = true
-	elseif cmd[2]:lower():startswith("natural") or cmd[2]:lower():startswith("enhance") or cmd[2]:lower():startswith("duration") then Roll_ind_1 = 30  rollchange = true
-	elseif cmd[2]:lower():startswith("run") or cmd[2]:lower():startswith("meva") or cmd[2]:lower():startswith("magic e") then Roll_ind_1 = 31  rollchange = true
+function handle_cycleback(cmdParams)
+	if #cmdParams == 0 then
+		add_to_chat(123,'Cycle failure: field not specified.')
+		return
 	end
-	
-	if rollchange == true then
-		windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[Roll_ind_1]..'')
-	else
-		windower.add_to_chat(7,'Invalid roll name, Roll 1 remains: '..Rollindex[Roll_ind_1]..'')
-	end
+	mode = _G[cmdParams[1]]
+	mode:cycleback()
+	add_to_chat(123,'%s set to %s':format(mode.description,mode.value))
+	update_gear()
 end
-
-function handle_roll2(cmdParams)
-	local rollchange = false
-	if cmd[2] == nil then windower.add_to_chat(7,'Roll 1: '..Rollindex[Roll_ind_2]..'') return
-	elseif cmd[2]:lower():startswith("warlock") or cmd[2]:lower():startswith("macc") or cmd[2]:lower():startswith("magic ac") or cmd[2]:lower():startswith("rdm") then Roll_ind_2 = 5  rollchange = true
-	elseif cmd[2]:lower():startswith("fight") or cmd[2]:lower():startswith("double") or cmd[2]:lower():startswith("dbl") or cmd[2]:lower():startswith("war") then Roll_ind_2 = 1  rollchange = true
-	elseif cmd[2]:lower():startswith("monk") or cmd[2]:lower():startswith("subtle") or cmd[2]:lower():startswith("mnk") then Roll_ind_2 = 2  rollchange = true
-	elseif cmd[2]:lower():startswith("heal") or cmd[2]:lower():startswith("cure") or cmd[2]:lower():startswith("whm") then Roll_ind_2 = 3  rollchange = true
-	elseif cmd[2]:lower():startswith("wizard") or cmd[2]:lower():startswith("matk") or cmd[2]:lower():startswith("magic at") or cmd[2]:lower():startswith("blm") then Roll_ind_2 = 4  rollchange = true
-	elseif cmd[2]:lower():startswith("rogue") or cmd[2]:lower():startswith("crit") or cmd[2]:lower():startswith("thf") then Roll_ind_2 = 6  rollchange = true
-	elseif cmd[2]:lower():startswith("gallant") or cmd[2]:lower():startswith("def") or cmd[2]:lower():startswith("pld") then Roll_ind_2 = 7  rollchange = true
-	elseif cmd[2]:lower():startswith("chaos") or cmd[2]:lower():startswith("attack") or cmd[2]:lower():startswith("atk") or cmd[2]:lower():startswith("drk") then Roll_ind_2 = 8  rollchange = true
-	elseif cmd[2]:lower():startswith("beast") or cmd[2]:lower():startswith("pet at") or cmd[2]:lower():startswith("bst") then Roll_ind_2 = 9  rollchange = true
-	elseif cmd[2]:lower():startswith("choral") or cmd[2]:lower():startswith("inter") or cmd[2]:lower():startswith("spell inter") or cmd[2]:lower():startswith("brd") then Roll_ind_2 = 10  rollchange = true
-	elseif cmd[2]:lower():startswith("hunt") or cmd[2]:lower():startswith("acc") or  cmd[2]:lower():startswith("rng") then Roll_ind_2 = 11  rollchange = true
-	elseif cmd[2]:lower():startswith("sam") or cmd[2]:lower():startswith("stp") or cmd[2]:lower():startswith("store") then Roll_ind_2 = 12  rollchange = true
-	elseif cmd[2]:lower():startswith("nin") or cmd[2]:lower():startswith("eva") then Roll_ind_2 = 13  rollchange = true
-	elseif cmd[2]:lower():startswith("drach") or cmd[2]:lower():startswith("pet ac") or cmd[2]:lower():startswith("drg") then Roll_ind_2 = 14  rollchange = true
-	elseif cmd[2]:lower():startswith("evoke") or cmd[2]:lower():startswith("refresh") or cmd[2]:lower():startswith("smn") then Roll_ind_2 = 15  rollchange = true
-	elseif cmd[2]:lower():startswith("magus") or cmd[2]:lower():startswith("mdb") or cmd[2]:lower():startswith("magic d") or cmd[2]:lower():startswith("blu") then Roll_ind_2 = 16  rollchange = true
-	elseif cmd[2]:lower():startswith("cor") or cmd[2]:lower():startswith("exp") then Roll_ind_2 = 17  rollchange = true
-	elseif cmd[2]:lower():startswith("pup") or cmd[2]:lower():startswith("pet m") then Roll_ind_2 = 18  rollchange = true
-	elseif cmd[2]:lower():startswith("dance") or cmd[2]:lower():startswith("regen") or cmd[2]:lower():startswith("dnc") then Roll_ind_2 = 19  rollchange = true
-	elseif cmd[2]:lower():startswith("sch") or cmd[2]:lower():startswith("conserve m") then Roll_ind_2 = 20  rollchange = true
-	elseif cmd[2]:lower():startswith("bolt") or cmd[2]:lower():startswith("move") or cmd[2]:lower():startswith("flee") or cmd[2]:lower():startswith("speed") then Roll_ind_2 = 21  rollchange = true
-	elseif cmd[2]:lower():startswith("cast") or cmd[2]:lower():startswith("fast") or cmd[2]:lower():startswith("fc") then Roll_ind_2 = 22  rollchange = true
-	elseif cmd[2]:lower():startswith("course") or cmd[2]:lower():startswith("snap") then Roll_ind_2 = 23  rollchange = true
-	elseif cmd[2]:lower():startswith("blitz") or cmd[2]:lower():startswith("delay") then Roll_ind_2 = 24  rollchange = true
-	elseif cmd[2]:lower():startswith("tact") or cmd[2]:lower():startswith("regain") then Roll_ind_2 = 25  rollchange = true
-	elseif cmd[2]:lower():startswith("all") or cmd[2]:lower():startswith("skillchain") then Roll_ind_2 = 26  rollchange = true
-	elseif cmd[2]:lower():startswith("miser") or cmd[2]:lower():startswith("save tp") or cmd[2]:lower():startswith("conserve t") then Roll_ind_2 = 27  rollchange = true
-	elseif cmd[2]:lower():startswith("companion") or cmd[2]:lower():startswith("pet r") then Roll_ind_2 = 28  rollchange = true
-	elseif cmd[2]:lower():startswith("avenge") or cmd[2]:lower():startswith("counter") then Roll_ind_2 = 29  rollchange = true
-	elseif cmd[2]:lower():startswith("natural") or cmd[2]:lower():startswith("enhance") or cmd[2]:lower():startswith("duration") then Roll_ind_2 = 30  rollchange = true
-	elseif cmd[2]:lower():startswith("run") or cmd[2]:lower():startswith("meva") or cmd[2]:lower():startswith("magic e") then Roll_ind_2 = 31  rollchange = true
-	end
-	
-	if rollchange == true then
-		windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[Roll_ind_2]..'')
-	else
-		windower.add_to_chat(7,'Invalid roll name, Roll 1 remains: '..Rollindex[Roll_ind_2]..'')
-	end
-end
-
-function save_weapons()
-	add_to_chat(123,'Main, sub, and range saved')
-	weapons = {
-		main = player.equipment.main,
-		sub = player.equipment.sub,
-		range = player.equipment.range}
-end
-
-
 
 function get_idle_set()
 	if buffactive['Shell'] then
@@ -822,13 +737,14 @@ function get_idle_set()
 	end
 end
 
-function get_engaged_set()
-	--haste = get_haste()
-	local acc = cycle_table['Melee Accuracy']
-	if sets.engaged[get_haste_set()][acc[acc[1]]] then -- sets.engaged.DW11.Mid
-		s = sets.engaged[get_haste_set()][acc[acc[1]]]
+function get_engaged_set()	
+	local acc = meleeAccuracy.value
+	local haste = get_haset_set()
+	
+	if sets.engaged[haste][acc] then
+		s = sets.engaged[haste][acc]
 	else
-		s = sets.engaged[get_haste_set()] -- sets.engaged.DW11
+		s = sets.engaged[haste]
 	end
 	return s
 end
@@ -846,13 +762,7 @@ function get_haste_set()
 end
 
 function get_WS_acc(ws)
-	local acc = {}
-	if weaponskills[ws] then	
-		acc = weaponskills[ws]
-	else
-		acc = 'Physical Accuracy'
-	end
-	return cycle_table[acc][cycle_table[acc][1]] -- a string 'Normal', 'Mid', or 'High'
+	return _G[weaponskills[ws] or 'meleeAccuracy'].value
 end
 
 function get_WS_type(ws)
@@ -874,8 +784,9 @@ function handle_cursna()
 	equip(sets.Cursna)
 end
 
-function handle_qd()
-	local element = cycle_table['Quickdraw Element'][cycle_table['Quickdraw Element'][1]]
+function handle_qd(cmdParams)
+	local element = _G['quickdrawElement%i':format(cmdParams[1])].value
+	QDMode = _G['quickdrawMode%i':format(cmdParams[1])].value	-- set global QD mode for the precast function
 	send_command('input /ja "'..element..' shot" <t>')
 end
 
@@ -892,11 +803,6 @@ function gearinfo(cmdParams)
                 DW = false
       	    end
         end
-        --[[if type(tonumber(cmdParams[3])) == 'number' then
-          	if tonumber(cmdParams[3]) ~= Haste then
-              	Haste = tonumber(cmdParams[3])
-            end
-        end]]
         if type(cmdParams[4]) == 'string' then
             if cmdParams[4] == 'true' then
                 moving = true
@@ -906,7 +812,7 @@ function gearinfo(cmdParams)
         end
 		if not moving then
 			local t = ft_target()
-			if t and bit.band(t.id,0xFF000000) ~= 0 then -- highest byte of target.id indicates whether it's a play or not
+			if t and bit.band(t.id,0xFF000000) ~= 0 then -- highest byte of target.id indicates whether it's a player or not
 				facetarget()
 			end
 		end
@@ -923,7 +829,7 @@ end
 function update_gear()
 	if player.status == 'Engaged' and not emergancy_DT then
 		equip(get_engaged_set())
-		if cycle_table['DD Mode'][1] == 3 then
+		if ddMode.value == 'Hybrid' then
 			equip(sets.engaged.Hybrid)
 		end
 	else -- if we are idle
@@ -932,6 +838,8 @@ function update_gear()
 	if buffactive.Sleep or buffactive.Lullaby then
 		equip(get_idle_set())
 	end
+	equip({range=rangedWeapon.value})
+	equip(weapontable[meleeWeapons.value])
 end
 
 function get_eTP()
@@ -947,17 +855,6 @@ end
 function buff_change(buff,gain)
 	if buff == 'Sleep' or buff == 'Lullaby' then update_gear() end
 end
-
-local sch_storms = {
-	Fire='Firestorm',
-	Earth='Sandstorm',
-	Water='Rainstorm',
-	Wind='Windstorm',
-	Ice='Hailstorm',
-	Thunder='Thunderstorm',
-	Light='Aurorastorm',
-	Dark='Voidstorm'
-}
 
 function precast(spell,action)
 	--if RA_precast(spell,action) then return end -- intercept and queue actions if autoRA is on
@@ -1020,9 +917,7 @@ function precast(spell,action)
 				set = set.maxTP
 			end
 		end
-		---add_to_chat(set)
 		equip(set)
-		-- May need to check buffs for scholar storms
 		if get_WS_type(spell.name) == 'Magic' and (	world.weather_element == spell.element or
 													world.day_element == spell.element ) then
 			equip(sets.Obi)
@@ -1033,14 +928,10 @@ function precast(spell,action)
 	elseif spell.name:contains('Step') then
 		equip(sets.precast.Step)
 	elseif spell.type == 'CorsairRoll' and spell.name:contains('Roll') then
-			-- if we want to only swap weapons at certain tp thresholds, put that logic here
-			if not midroll then
-				save_weapons()
-			end
-			midroll = true
+
 			equip(sets.JA['Phantom Roll'])	
 	elseif spell.type == 'CorsairShot' then
-		if cycle_table['Quickdraw Mode'][cycle_table['Quickdraw Mode'][1]] == 2 then -- damage/acc
+		if QDMode == 'Damage' then
 			if spell.name:contains('Light') or spell.name:contains('Dark') then
 				equip(sets.JA.Quickdraw.Accuracy)
 			else
@@ -1061,7 +952,6 @@ function precast(spell,action)
 		elseif spell.english == 'Fold' and buffactive['Bust'] == 2 then
 			equip(sets.JA.FoldDoubleBust)
 		end
-		-- Again, don't know if this will catch sch storms
 		if world.weather_element == spell.element or world.day_element == spell.element then
 			equip(sets.Obi)
 		end
@@ -1083,11 +973,18 @@ function midcast(spell,action)
 			equip(sets.midcast)
 		end
 	elseif spell.action_type == 'Ranged Attack' then
-		local acc = cycle_table['Ranged Accuracy'][cycle_table['Ranged Accuracy'][1]]
-		if acc == 'Normal' then
-			equip(sets.midcast.RA)
-		else
-			equip(sets.midcast.RA[acc])
+		local acc = rangedAccuracy.value
+		local gun = rangedWeapon.value
+		local equipSet = sets.midcast.RA
+		
+		if equipSet[gun] then
+			equipSet = equipSet[gun]
+		end
+		if equipSet.AM3 and buffactive['Aftermath: Lv.3'] then
+			equipSet = equipSet.AM3
+		end
+		if equipSet[acc] then
+			equipSet = equipSet[acc]
 		end
 		if buffactive['Triple Shot'] then
 			equip(sets.TripleShot)
@@ -1097,17 +994,6 @@ end
 
 function aftercast(spell,action)
 	rm_target = nil
-	if not midroll then
-		equip(weapons)
-	end
-	--if spell.type == 'CorsairRoll' then
-	equip({range=weapons.range})
-	midroll = false
-	--end
-	--[[if spell.type == 'Ranged Attack' or spell.type == 'CorsairShot' or spell.type == 'WeaponSkill' then
-		facetarget()
-	end]]
-	
 	update_gear()
 end
 
