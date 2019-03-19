@@ -739,7 +739,7 @@ end
 
 function get_engaged_set()	
 	local acc = meleeAccuracy.value
-	local haste = get_haset_set()
+	local haste = get_haste_set()
 	
 	if sets.engaged[haste][acc] then
 		s = sets.engaged[haste][acc]
@@ -829,7 +829,7 @@ end
 function update_gear()
 	if player.status == 'Engaged' and not emergancy_DT then
 		equip(get_engaged_set())
-		if ddMode.value == 'Hybrid' then
+		if DDMode.value == 'Hybrid' then
 			equip(sets.engaged.Hybrid)
 		end
 	else -- if we are idle
@@ -986,6 +986,7 @@ function midcast(spell,action)
 		if equipSet[acc] then
 			equipSet = equipSet[acc]
 		end
+		equip(equipSet)
 		if buffactive['Triple Shot'] then
 			equip(sets.TripleShot)
 		end
