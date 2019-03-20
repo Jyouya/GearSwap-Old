@@ -435,11 +435,15 @@ register_unhandled_command(function (...)
 					windower.add_to_chat(200, "Rnghelper : Enabling")
 					enabled = true
 				end
-			elseif T{'disable','off','stop'}:contains(cmd) then
+			elseif T{'disable','off','stop'}:contains(cmd) then -- changed to clear queue as well
 				if not enabled then
 					windower.add_to_chat(200, "Rnghelper : Already disabled")
 				else
 					windower.add_to_chat(200, "Rnghelper : Disabling")
+					target = nil
+					pending = nil
+					completion = false
+					queue:clear()
 					enabled = false
 					timeout = nil
 				end
