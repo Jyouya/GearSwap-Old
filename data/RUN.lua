@@ -1356,7 +1356,7 @@ function get_sets()
 	sets.JA['Valiance'] = set_combine(sets.Enmity[1], {
 		body="Runeist's Coat +3",
 		legs="Futhark Trousers +3"})
-	sets.JA['One for All'] = sets.Enmity[1]
+	sets.JA['One for All'] = sets.Enmity[1] -- get more max HP in this set
 	sets.JA['Liement'] = set_combine(sets.Enmity[1], {body="Futhark Coat +3"})
 	sets.JA['Battuta'] = set_combine(sets.Enmity[1], {head="Futhark Bandeau +3"})
 	sets.JA['Pflug'] = set_combine(sets.Enmity[1], {feet="Runeist Bottes +3"})
@@ -1531,7 +1531,7 @@ function handle_main(cmdParams)
 	end
 	local name = table.remove(cmdParams, 1)
 	if #cmdParams ~= 0 then
-		for word in cmdParams do
+		for i, word in ipairs(cmdParams) do
 			name = name..' '..word
 		end
 	end
@@ -1556,7 +1556,7 @@ function handle_sub(cmdParams)
 	end
 	local name = table.remove(cmdParams, 1)
 	if #cmdParams ~= 0 then
-		for word in cmdParams do
+		for i, word in ipairs(cmdParams) do
 			name = name..' '..word
 		end
 	end
