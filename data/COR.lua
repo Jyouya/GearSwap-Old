@@ -1,5 +1,6 @@
 require('rnghelper')
 require('modes')
+require('UI')
 --require('yayahelper')
 
 function get_sets()
@@ -17,7 +18,7 @@ function get_sets()
 	send_command('bind !f9 gs c cycle magicAccuracy')
 	send_command('bind @f9 gs c cycle hotshotAccuracy')
 	
-	send_command('bind f10 gs c toggle emergancyDT')
+	send_command('bind f10 gs c set DDMode Emergancy DT')
 	send_command('bind ^f10 gs c cycle DDMode')
 	
 	send_command('bind f11 gs c cycle quickdrawElement1')
@@ -37,7 +38,7 @@ function get_sets()
 	
 	
 	selfCommandMaps = {
-		['switch']	= handle_switch,
+		['set']		= handle_set,
 		['toggle']	= handle_toggle,
 		['cycle']	= handle_cycle,
 		['cycleback']	= handle_cycleback,
@@ -51,15 +52,15 @@ function get_sets()
 		}
 	
 	rangedWeapon = M{['description']='Ranged Weapon', 'Death Penalty', 'Armageddon', 'Fomalhaut', 'Anarchy +2'}
-	meleeWeapons = M{['description']='Melee Weapons', 'Rostam/Kaja', 'Rostam/Blurred', 'Rostam/Shield', 'Kaja/Blurred', 'Fettering/Shield', 'Rostam/Fettering'}
+	meleeWeapons = M{['description']='Melee Weapons', 'Rostam-Kaja', 'Rostam-Blurred', 'Rostam-Shield', 'Kaja-Blurred', 'Fettering-Shield', 'Rostam-Fettering'}
 	
 	weapontable = {
-		['Rostam/Kaja']={main='Rostam',sub='Kaja Knife'},
-		['Rostam/Blurred']={main='Rostam',sub='Blurred Knife +1'},
-		['Rostam/Shield']={main='Rostam',sub='Nusku Shield'},
-		['Kaja/Blurred']={main='Kaja Sword',sub='Blurred Knife +1'},
-		['Fettering/Shield']={main='Fettering Blade',sub='Nusku Shield'},
-		['Rostam/Fettering']={main='Rostam',sub='Fettering Blade'}
+		['Rostam-Kaja']={main='Rostam',sub='Kaja Knife'},
+		['Rostam-Blurred']={main='Rostam',sub='Blurred Knife +1'},
+		['Rostam-Shield']={main='Rostam',sub='Nusku Shield'},
+		['Kaja-Blurred']={main='Kaja Sword',sub='Blurred Knife +1'},
+		['Fettering-Shield']={main='Fettering Blade',sub='Nusku Shield'},
+		['Rostam-Fettering']={main='Rostam',sub='Fettering Blade'}
 		}
 	
 	meleeAccuracy = M{['description']='Melee Accuracy', 'Normal', 'Mid', 'Acc'}
@@ -71,7 +72,7 @@ function get_sets()
 	quickdrawMode1 = M{['description']='Primary Quickdraw Mode', 'Damage', 'Store TP'}
 	quickdrawMode2 = M{['description']='Secondary Quickdraw Mode', 'Damage', 'Store TP'}
 	QDMode = 'Damage'
-	DDMode = M{['description']='DD Mode', 'Normal', 'Hybrid'}
+	DDMode = M{['description']='DD Mode', 'Normal', 'Hybrid', 'Emergancy DT'}
 	emergancyDT = M(false,'Emegancy DT')
 	
 	DW_Needed = 11
@@ -117,6 +118,7 @@ function get_sets()
 	Adhemar.Body.PathA = { name="Adhemar Jacket +1", augments={'DEX+12','AGI+12','Accuracy+20',}}
 	Adhemar.Legs = {}
 	Adhemar.Legs.PathC = { name="Adhemar Kecks +1", augments={'AGI+12','Rng.Acc.+20','Rng.Atk.+20',}}
+	Adhemar.Legs.PathD = { name="Adhemar Kecks +1", augments={'AGI+12','"Rapid Shot"+13','Enmity-6',}}
 	Adhemar.Hands = {}
 	Adhemar.Hands.PathA = { name="Adhemar Wrist. +1", augments={'DEX+12','AGI+12','Accuracy+20',}}
 	Adhemar.Hands.PathC = { name="Adhemar Wrist. +1", augments={'AGI+12','Rng.Acc.+20','Rng.Atk.+20',}}
@@ -227,7 +229,7 @@ function get_sets()
 		neck="Commodore Charm +2",
 		body="Laksamana's Frac +3",
 		hands="Carmine Fin. Ga. +1",
-		legs=Adhemar.Legs.PathC,
+		legs=Adhemar.Legs.PathD,
 		feet="Meg. Jam. +2",
 		back=Camulus.Snapshot,
 		waist="Yameya Belt",}
@@ -238,7 +240,7 @@ function get_sets()
 		neck="Commodore Charm +2",
 		body="Laksamana's Frac +3",
 		hands="Carmine Fin. Ga. +1",
-		legs=Adhemar.Legs.PathC,
+		legs=Adhemar.Legs.PathD,
 		feet="Pursuer's Gaiters",
 		back=Camulus.Snapshot,
 		waist="Yameya Belt",}
@@ -525,7 +527,7 @@ function get_sets()
 		head="Oshosi Mask +1",
 		body="Chasseur's Frac +1",
 		--hands="Lanun Gants +3",
-		--legs="Oshosi Trousers +1",
+		legs="Oshosi Trousers +1",
 		feet="Oshosi Leggings +1",
 		}
 		
@@ -648,6 +650,7 @@ function get_sets()
 	sets.Obi = {waist="Hachirin-no-obi"}
 		
 	send_command('lua load gearinfo')
+	build_UI()
 end
 
 function file_unload() -- unbind hotkeys
@@ -674,6 +677,143 @@ function file_unload() -- unbind hotkeys
 	send_command('unbind numpad0')
 	send_command('unbind numpad.')
 	send_command('unbind ^numpad.')
+end
+
+function build_UI()
+	DT = IconButton{
+		x = 1732,
+		y = 80,
+		var = DDMode,
+		icons = {
+			{img = 'DD Normal.png', value = 'Normal'},
+			{img = 'DD Hybrid.png', value = 'Hybrid'},
+			{img = 'Emergancy DT.png', value = 'Emergancy DT'}
+		}
+	}
+	DT:draw()
+
+	weap = IconButton{
+		x = 1732,
+		y = 134,
+		var = meleeWeapons,
+		icons = {
+			{img = 'Rostam-Kaja.png', value = 'Rostam-Kaja'},
+			{img = 'Rostam-Blurred.png', value = 'Rostam-Blurred'},
+			{img = 'Rostam-Nusku.png', value = 'Rostam-Shield'},
+			{img = 'Kaja-Blurred.png', value = 'Kaja-Blurred'},
+			{img = 'Fettering-Nusku.png', value = 'Fettering-Shield'},
+			{img = 'Rostam-Fettering.png', value = 'Rostam-Fettering'}
+		}
+	}
+	weap:draw() -- initialize the weapon button
+	
+	range= IconButton{
+		x = 1732,
+		y = 188,
+		var = rangedWeapon,
+		icons = {
+			{img = 'Death Penalty.png', value = 'Death Penalty'},
+			{img = 'Armageddon.png', value = 'Armageddon'},
+			{img = 'Fomalhaut.png', value = 'Fomalhaut'},
+			{img = 'Anarchy +2.png', value = 'Anarchy +2'}
+		}
+	}
+	range:draw()
+	
+	QD1 = IconButton{
+		x = 1732,
+		y = 242,
+		var = quickdrawElement1,
+		icons = {
+			{img = 'Fire Shot.png', value = 'Fire'},
+			{img = 'Earth Shot.png', value = 'Earth'},
+			{img = 'Water Shot.png', value = 'Water'},
+			{img = 'Wind Shot.png', value = 'Wind'},
+			{img = 'Ice Shot.png', value = 'Ice'},
+			{img = 'Thunder Shot.png', value = 'Thunder'},
+			{img = 'Light Shot.png', value = 'Light'},
+			{img = 'Dark Shot.png', value = 'Dark'}
+		}
+	}
+	QD1:draw()
+	QD2 = IconButton{
+		x = 1732,
+		y = 296,
+		var = quickdrawElement2,
+		icons = {
+			{img = 'Fire Shot.png', value = 'Fire'},
+			{img = 'Earth Shot.png', value = 'Earth'},
+			{img = 'Water Shot.png', value = 'Water'},
+			{img = 'Wind Shot.png', value = 'Wind'},
+			{img = 'Ice Shot.png', value = 'Ice'},
+			{img = 'Thunder Shot.png', value = 'Thunder'},
+			{img = 'Light Shot.png', value = 'Light'},
+			{img = 'Dark Shot.png', value = 'Dark'}
+		}
+	}
+	QD2:draw()
+	
+	RHToggle = ToggleButton{
+		x = 1732,
+		y = 404,
+		var = 'enabled',
+		iconUp = 'RH Off.png',
+		iconDown = 'RH On.png',
+	}
+	RHToggle:draw()
+	
+	AMToggle = ToggleButton{
+		x = 1732,
+		y = 458,
+		var = 'useAM',
+		iconUp = 'Aftermath Off.png',
+		iconDown = 'Aftermath On.png',
+	}
+	AMToggle:draw()
+	
+	RHWS = PassiveText{
+		x = 1896,
+		y = 512,
+		var = 'weaponskill',
+		align = 'right',
+	}
+	RHWS:draw()
+	
+	Acc_display = TextCycle{
+		x = 1896,
+		y = 532,
+		var = meleeAccuracy,
+		align = 'right',
+		width = 112
+	}
+	Acc_display:draw()
+	
+	RAcc_display = TextCycle{
+		x = 1896,
+		y = 564,
+		var = rangedAccuracy,
+		align = 'right',
+		width = 112
+	}
+	RAcc_display:draw()
+	
+	MAcc_display = TextCycle{
+		x = 1896,
+		y = 596,
+		var = magicAccuracy,
+		align = 'right',
+		width = 112
+	}
+	MAcc_display:draw()
+	
+	HAcc_display = TextCycle{
+		x = 1896,
+		y = 628,
+		var = hotshotAccuracy,
+		align = 'right',
+		width = 112
+	}
+	HAcc_display:draw()
 end
 
 function self_command(commandArgs)
@@ -705,6 +845,25 @@ function handle_toggle(cmdParams)
 	mode:toggle()
 	add_to_chat(123,'%s set to %s':format(mode.description,tostring(mode.value)))
 	update_gear()
+end
+
+function handle_set(cmdParams)
+	if #cmdParams == 0 then
+		return
+	end
+	local m = table.remove(cmdParams, 1)
+	mode = _G[m]
+	
+	local s = table.remove(cmdParams, 1)
+	if #cmdParams ~= 0 then
+		for i,word in ipairs(cmdParams) do
+			s = s..' '..word
+		end
+	end
+	
+	mode:set(s)
+	update_gear()
+	add_to_chat(123,'%s set to %s':format(mode.description, tostring(mode.value)))
 end
 
 function handle_cycle(cmdParams)
@@ -827,7 +986,7 @@ function handle_face(target)
 end
 
 function update_gear()
-	if player.status == 'Engaged' and not emergancy_DT then
+	if player.status == 'Engaged' and DDMode.value ~=  'Emergancy DT' then
 		equip(get_engaged_set())
 		if DDMode.value == 'Hybrid' then
 			equip(sets.engaged.Hybrid)
@@ -838,6 +997,8 @@ function update_gear()
 	if buffactive.Sleep or buffactive.Lullaby then
 		equip(get_idle_set())
 	end
+	--print(rangedWeapon.value, meleeWeapons.value)
+	
 	equip({range=rangedWeapon.value})
 	equip(weapontable[meleeWeapons.value])
 end

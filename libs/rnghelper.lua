@@ -7,17 +7,17 @@ local self = windower.ffxi.get_player().id
 local target = nil
 local completion = false
 local mode = nil
-local weaponskill = nil
+weaponskill = nil
 local cooldowns = {}
 local timeouts = {}
 local settings = config.load('libs/rnghelper_settings.xml')
 local cooldown = 0
 local queue = Q{}
 local pending = nil
-local enabled = true
+enabled = true
 local midshot = false
 local timeout = 0
-local useAM = false
+useAM = false
 
 local action_events = {
     [2] = 'mid /ra',
@@ -478,7 +478,7 @@ local function check_timeout()
 		if t and bit.band(t.id,0xFF000000) then
 			handle_interrupt()
 		else
-			windower.add_to_chat(200, "Lockup detected, autoclearing queue")
+			windower.add_to_chat(200, "Rnghelper : Lockup detected, autoclearing queue")
 			target = nil
 			pending = nil
 			completion = false
