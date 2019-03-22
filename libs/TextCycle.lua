@@ -146,10 +146,12 @@ _meta.TextCycle.__methods['on_mouse'] = function(tc, type, x, y, delta, blocked)
 		if x >= tc._track._leftarrow.x and x < tc._track._leftarrow.x + 23 and y >= tc._track._leftarrow.y and y < tc._track._leftarrow.y + 20 then
 			tc._track._var:cycleback()
 			tc:update()
+			update_gear()
 			return true
 		elseif x >= tc._track._rightarrow.x and x < tc._track._rightarrow.x + 23 and y >= tc._track._rightarrow.y and y < tc._track._rightarrow.y + 20 then
 			tc._track._var:cycle()
 			tc:update()
+			update_gear()
 			return true
 		end
 	elseif type == 2 then

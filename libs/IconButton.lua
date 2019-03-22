@@ -11,8 +11,10 @@ function IconButton(args) -- constructs the object, but does not initialize it
 	ib._track._x = args.x
 	ib._track._y = args.y
 	ib._track._var = args.var
+	ib._track._state = args.var.value
 	ib._track._icons = args.icons
-	ib._track._event = nil
+	ib._track._mouse_event = nil
+	ib._track._update_event = nil
 	ib._track._pressed = false
 	ib._track._suppress = false
 	return setmetatable(ib, _meta.IconButton)	
@@ -53,7 +55,9 @@ _meta.IconButton.__methods['draw'] = function(ib) -- Finishes initialization and
 		button	= ib
 		}
 	ib._track._iconPalette:draw()
-	ib._track._event = UI.register_mouse_listener(ib)
+	ib._track._mouse_event = UI.register_mouse_listener(ib)
+	ib._track._update_event = UI.register_update_object(ib)
+	
 end
 
 _meta.IconButton.__methods['on_mouse'] = function(ib, type, x, y, delta, blocked)
@@ -78,6 +82,19 @@ _meta.IconButton.__methods['on_mouse'] = function(ib, type, x, y, delta, blocked
 	end
 end
 
+--[[_meta.IconButton.__methods['update'] = function(ib)
+	if ib._track._var.value ~= ib._track._state then
+		self = tostring(ib)
+	
+	if _G[tb._track._var] ~= tb._track._state then
+		
+		windower.prim.set_visibility('%s Up':format(self), not (_G[tb._track._var] ~= tb._track._invert))
+		windower.prim.set_visibility('%s Down':format(self), _G[tb._track._var] ~= tb._track._invert)
+		windower.prim.set_visibility('%s press':format(self), _G[tb._track._var] ~= tb._track._invert)
+		tb._track._state = _G[tb._track._var]
+	end
+end]]
+
 _meta.IconButton.__methods['press'] = function(ib)
 	-- visually depress the button
 	ib._track._pressed = true
@@ -92,14 +109,17 @@ _meta.IconButton.__methods['unpress'] = function(ib)
 end
 
 _meta.IconButton.__methods['update'] = function(ib)
-	for ind, icon in ipairs(ib._track._icons) do
-		if icon.value == ib._track._var.value then
-			windower.prim.set_visibility('%s %s':format(tostring(ib),icon.value), true)
-		else
-			windower.prim.set_visibility('%s %s':format(tostring(ib),icon.value), false)
+	if ib._track._var.value ~= ib._track._state then
+		for ind, icon in ipairs(ib._track._icons) do
+			if icon.value == ib._track._var.value then
+				windower.prim.set_visibility('%s %s':format(tostring(ib),icon.value), true)
+			else
+				windower.prim.set_visibility('%s %s':format(tostring(ib),icon.value), false)
+			end
 		end
+		windower.send_command('gs c update')
+		ib._track._state = ib._track._var.value
 	end
-	windower.send_command('gs c update')
 end
 
 function palette_y_align(y, size)

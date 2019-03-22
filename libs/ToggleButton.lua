@@ -11,9 +11,11 @@ function ToggleButton(args) -- constructs the object, but does not initialize it
 	tb._track._x = args.x
 	tb._track._y = args.y
 	tb._track._var = args.var
+	tb._track._state = _G[args.var]
 	tb._track._iconDown = args.iconDown
 	tb._track._iconUp = args.iconUp
-	tb._track._event = nil
+	tb._track._mouse_event = nil
+	tb._track._update_event = nil
 	tb._track._suppress = false
 	--tb._track._startPressed = args.startPressed
 	if args.invert then
@@ -59,7 +61,8 @@ _meta.ToggleButton.__methods['draw'] = function(tb) -- Finishes initialization a
 	
 	-- display the icon that is currently active
 	--windower.prim.set_visibility('%s %s':format(self, ('Down' and tb._track._startPressed) or 'Up'), tb._track._var ~= tb._track._invert)
-	tb._track._event = UI.register_mouse_listener(tb)
+	tb._track._mouse_event = UI.register_mouse_listener(tb)
+	tb._track._update_event = UI.register_update_object(tb)
 end
 
 _meta.ToggleButton.__methods['on_mouse'] = function(tb, type, x, y, delta, blocked)
@@ -84,6 +87,16 @@ _meta.ToggleButton.__methods['on_mouse'] = function(tb, type, x, y, delta, block
 	end
 end
 
+_meta.ToggleButton.__methods['update'] = function (tb)
+	if _G[tb._track._var] ~= tb._track._state then
+		self = tostring(tb)
+		windower.prim.set_visibility('%s Up':format(self), not (_G[tb._track._var] ~= tb._track._invert))
+		windower.prim.set_visibility('%s Down':format(self), _G[tb._track._var] ~= tb._track._invert)
+		windower.prim.set_visibility('%s press':format(self), _G[tb._track._var] ~= tb._track._invert)
+		tb._track._state = _G[tb._track._var]
+	end
+end
+
 _meta.ToggleButton.__methods['press'] = function(tb)
 	-- visually depress the button
 	tb._track._pressed = true
@@ -91,6 +104,7 @@ _meta.ToggleButton.__methods['press'] = function(tb)
 	windower.prim.set_visibility('%s Up':format(tostring(tb)), false)
 	windower.prim.set_visibility('%s Down':format(tostring(tb)), true)
 	_G[tb._track._var] = not tb._track._invert
+	tb._track._state = not tb._track._invert
 end
 
 _meta.ToggleButton.__methods['unpress'] = function(tb)
@@ -99,6 +113,7 @@ _meta.ToggleButton.__methods['unpress'] = function(tb)
 	windower.prim.set_visibility('%s Down':format(tostring(tb)), false)
 	windower.prim.set_visibility('%s Up':format(tostring(tb)), true)
 	_G[tb._track._var] = tb._track._invert
+	tb._track._state = tb._track._invert
 end
 
 _meta.ToggleButton.__index = function(tb, k)
