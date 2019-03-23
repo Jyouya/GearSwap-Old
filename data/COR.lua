@@ -58,7 +58,7 @@ function get_sets()
 		['Rostam-Naegling']={main='Rostam',sub='Naegling'},
 		['Rostam-Blurred']={main='Rostam',sub='Blurred Knife +1'},
 		['Rostam-Shield']={main='Rostam',sub='Nusku Shield'},
-		['Naegling-Blurred']={main='Naegling',sub='Blurred Knife +1'},
+		['Naegling-Blurred']={main='Naegling',sub={name='Blurred Knife +1',priority=15}},
 		['Fettering-Shield']={main='Fettering Blade',sub='Nusku Shield'},
 		['Rostam-Fettering']={main='Rostam',sub='Fettering Blade'}
 		}
