@@ -52,13 +52,13 @@ function get_sets()
 		}
 	
 	rangedWeapon = M{['description']='Ranged Weapon', 'Death Penalty', 'Armageddon', 'Fomalhaut', 'Anarchy +2'}
-	meleeWeapons = M{['description']='Melee Weapons', 'Rostam-Kaja', 'Rostam-Blurred', 'Rostam-Shield', 'Kaja-Blurred', 'Fettering-Shield', 'Rostam-Fettering'}
+	meleeWeapons = M{['description']='Melee Weapons', 'Rostam-Naegling', 'Rostam-Blurred', 'Rostam-Shield', 'Naegling-Blurred', 'Fettering-Shield', 'Rostam-Fettering'}
 	
 	weapontable = {
-		['Rostam-Kaja']={main='Rostam',sub='Kaja Knife'},
+		['Rostam-Naegling']={main='Rostam',sub='Naegling'},
 		['Rostam-Blurred']={main='Rostam',sub='Blurred Knife +1'},
 		['Rostam-Shield']={main='Rostam',sub='Nusku Shield'},
-		['Kaja-Blurred']={main='Kaja Sword',sub='Blurred Knife +1'},
+		['Naegling-Blurred']={main='Naegling',sub='Blurred Knife +1'},
 		['Fettering-Shield']={main='Fettering Blade',sub='Nusku Shield'},
 		['Rostam-Fettering']={main='Rostam',sub='Fettering Blade'}
 		}
@@ -697,10 +697,10 @@ function build_UI()
 		y = 134,
 		var = meleeWeapons,
 		icons = {
-			{img = 'Rostam-Kaja.png', value = 'Rostam-Kaja'},
+			{img = 'Rostam-Naegling.png', value = 'Rostam-Naegling'},
 			{img = 'Rostam-Blurred.png', value = 'Rostam-Blurred'},
 			{img = 'Rostam-Nusku.png', value = 'Rostam-Shield'},
-			{img = 'Kaja-Blurred.png', value = 'Kaja-Blurred'},
+			{img = 'Kaja-Blurred.png', value = 'Naegling-Blurred'},
 			{img = 'Fettering-Nusku.png', value = 'Fettering-Shield'},
 			{img = 'Rostam-Fettering.png', value = 'Rostam-Fettering'}
 		}
