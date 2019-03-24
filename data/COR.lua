@@ -167,7 +167,7 @@ function get_sets()
 	sets.JA["Tactician's Roll"] = set_combine(sets.JA['Phantom Roll'], {body="Chasseur's Frac +1"})
 	sets.JA["Allies' Roll"] = set_combine(sets.JA['Phantom Roll'], {hands="Chasseur's Gants +1"})
 	
-	sets.JA.FoldDoubleBust = {hands="Lanun Gants +1"}
+	sets.JA.FoldDoubleBust = {hands="Lanun Gants +3"}
 	
 	sets.JA.Quickdraw = {}
 	sets.JA.Quickdraw.Damage = {}
@@ -526,7 +526,7 @@ function get_sets()
 	sets.TripleShot = {
 		head="Oshosi Mask +1",
 		body="Chasseur's Frac +1",
-		--hands="Lanun Gants +3",
+		hands="Lanun Gants +3",
 		legs="Oshosi Trousers +1",
 		feet="Oshosi Leggings +1",
 		}
