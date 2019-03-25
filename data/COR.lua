@@ -1,6 +1,6 @@
 require('rnghelper')
 require('modes')
-require('UI')
+require('GUI')
 --require('yayahelper')
 
 function get_sets()
@@ -688,7 +688,8 @@ function build_UI()
 			{img = 'DD Normal.png', value = 'Normal'},
 			{img = 'DD Hybrid.png', value = 'Hybrid'},
 			{img = 'Emergancy DT.png', value = 'Emergancy DT'}
-		}
+		},
+		command = 'gs c update'
 	}
 	DT:draw()
 
@@ -703,7 +704,8 @@ function build_UI()
 			{img = 'Kaja-Blurred.png', value = 'Naegling-Blurred'},
 			{img = 'Fettering-Nusku.png', value = 'Fettering-Shield'},
 			{img = 'Rostam-Fettering.png', value = 'Rostam-Fettering'}
-		}
+		},
+		command = 'gs c update'
 	}
 	weap:draw() -- initialize the weapon button
 	
@@ -716,7 +718,8 @@ function build_UI()
 			{img = 'Armageddon.png', value = 'Armageddon'},
 			{img = 'Fomalhaut.png', value = 'Fomalhaut'},
 			{img = 'Anarchy +2.png', value = 'Anarchy +2'}
-		}
+		},
+		command = 'gs c update'
 	}
 	range:draw()
 	
@@ -733,7 +736,8 @@ function build_UI()
 			{img = 'Thunder Shot.png', value = 'Thunder'},
 			{img = 'Light Shot.png', value = 'Light'},
 			{img = 'Dark Shot.png', value = 'Dark'}
-		}
+		},
+		command = 'gs c update'
 	}
 	QD1:draw()
 	QD2 = IconButton{
@@ -749,7 +753,8 @@ function build_UI()
 			{img = 'Thunder Shot.png', value = 'Thunder'},
 			{img = 'Light Shot.png', value = 'Light'},
 			{img = 'Dark Shot.png', value = 'Dark'}
-		}
+		},
+		command = 'gs c update'
 	}
 	QD2:draw()
 	
@@ -771,12 +776,13 @@ function build_UI()
 	}
 	AMToggle:draw()
 	
-	RHWS = PassiveText{
+	RHWS = PassiveText({
 		x = 1896,
 		y = 512,
-		var = 'weaponskill',
-		align = 'right',
-	}
+		text = 'RH Weaponskill: %s',
+		--var = 'weaponskill',
+		align = 'right'},
+		'weaponskill')
 	RHWS:draw()
 	
 	Acc_display = TextCycle{
@@ -784,7 +790,8 @@ function build_UI()
 		y = 532,
 		var = meleeAccuracy,
 		align = 'right',
-		width = 112
+		width = 112,
+		command = 'gs c update'
 	}
 	Acc_display:draw()
 	
@@ -793,7 +800,8 @@ function build_UI()
 		y = 564,
 		var = rangedAccuracy,
 		align = 'right',
-		width = 112
+		width = 112,
+		command = 'gs c update'
 	}
 	RAcc_display:draw()
 	
@@ -802,7 +810,8 @@ function build_UI()
 		y = 596,
 		var = magicAccuracy,
 		align = 'right',
-		width = 112
+		width = 112,
+		command = 'gs c update'
 	}
 	MAcc_display:draw()
 	
@@ -811,7 +820,8 @@ function build_UI()
 		y = 628,
 		var = hotshotAccuracy,
 		align = 'right',
-		width = 112
+		width = 112,
+		command = 'gs c update'
 	}
 	HAcc_display:draw()
 end
