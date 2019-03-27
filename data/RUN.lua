@@ -1826,6 +1826,10 @@ function status_change(new,action)
 	update_gear()
 end
 
+function sub_job_change(new, old)
+	windower.send_command('gs reload')
+end
+
 
 
 --[[Known Issues:
