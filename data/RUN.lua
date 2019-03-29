@@ -1834,10 +1834,9 @@ end
 
 --[[Known Issues:
 
-- Does not unbind/rebind hotkeys or change macro books when changing subjobs
 - Does not detect Protectra/shellra or scholar AoE protect/shell
 - May not swap lugra earring at night (Needs Testing)
-- Doesn't have a lunge set
+- Incomplete Lunge set
 - Need a Drain set
 
 ]]
