@@ -641,6 +641,10 @@ function get_sets()
 		legs="Meghanada Chausses +2",
 		})
 		
+	sets.engaged.DW15.Acc = set_combine( sets.engaged.DW15.Mid, {
+		
+		})
+		
 	sets.engaged.Hybrid = {
 		head=Adhemar.Head.PathD,
 		neck="Loricate Torque +1",
