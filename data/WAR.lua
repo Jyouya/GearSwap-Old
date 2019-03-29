@@ -1,12 +1,14 @@
 require('Modes')
 require('Gui')
 
-function get_sets()
+function setup()
 	AccuracyMode = M{['description']='Accuracy Mode', 'Normal', 'Mid', 'High'}
 	
 	AbysseaMode = M(false, 'Abyssea Mode')
+	OffhandMode = M{['description']='Offhand Mode', 'Manual', 'Auto'}
 	
-	WeaponMode = M{['description']='Weapon(s)', 'Kaja Axe-Reikiko', 'Kaja Axe-Firangi', 'Kaja Sword-Reikiko', 'Chango', 'Montante +1', 'Shining One', 'Kaja Staff'}
+	WeaponMode = M{['description']='Weapon', 'Chango', 'Montante +1', 'Shining One', 'Kaja Staff', 'Kaja Axe', 'Kaja Sword'}
+	Offhand = M{['description']='Offhand', 'Reikiko', 'Barbarity +1', 'Digirbalag', 'Blurred Shield +1'}
 	AbysseaWeapon = M{['description']='Weapon', 'Dagger', 'Sword', 'Greatsword', 'Scythe', 'Spear', 'Club', 'Staff'}
 	
 	FencerMode = M(false, 'Equip Shield') -- will overwrite offhand with blurred shield if true
@@ -19,13 +21,22 @@ function get_sets()
 	}
 	
 	WeaponTable = {
-		['Kaja Axe-Reikiko'] = {main="Kaja Axe", sub="Reikiko", DW=true, img='WAR/Kaja Axe-Reikiko.png'},
-		['Kaja Axe-Firangi'] = {main="Kaja Axe", sub="Firangi", DW=true, img='WAR/Kaja Axe-Firangi.png'},
-		['Kaja Sword-Reikiko'] = {main="Kaja Sword", sub="Reikiko", DW=true, img='WAR/Kaja Sword-Reikiko.png'},
-		['Chango'] = {main="Chango", sub="Utu Grip", img='WAR/Chango.png'},
-		['Montante +1'] = {main="Montante +1", sub="Utu Grip", img='WAR/Montante.png'},
-		['Shining One'] = {main="Shining One", sub="Utu Grip", img='WAR/Bismarck.png'},
-		['Kaja Staff'] = {main="Kaja Staff", sub="Utu Grip", img='WAR/Kaja Staff.png'}
+		['Chango'] = {main="Chango", type='2H', img='WAR/Chango.png'},
+		['Montante +1'] = {main="Montante +1", type='2H', img='WAR/Montante.png'},
+		['Shining One'] = {main="Shining One", type='2H', img='WAR/Bismarck.png'},
+		['Kaja Staff'] = {main="Kaja Staff", type='2H', img='WAR/Kaja Staff.png'},
+		['Kaja Axe'] = {main="Kaja Axe", type='1H', DW=true, img='WAR/Kaja Axe.png', offhand= T{default='digirbalag',
+																								{buff='Fighter\'s Roll',weapon='Barbarity +1'},
+																								{buff='Mighty Strikes',weapon='Reikiko'}}},
+		['Kaja Sword'] = {main="Kaja Sword", type='1H', DW=true, img='WAR/Kaja Sword.png', offhand=T{default='Barbarity +1',
+																									{buff='Mighty Strikes',weapon='Reikiko'}}},		
+	}
+	
+	OffhandTable = {
+		['Reikiko'] = {sub="Reikiko", img='WAR/Reikiko.png', DW=true},
+		['Barbarity +1'] = {sub="Barbarity +1", img='WAR/Barbarity.png', DW=true},
+		['Digirbalag'] = {sub="Digirbalag", img='WAR/Digirbalag.png', DW=true},
+		['Blurred Shield +1'] = {sub="Blurred Shield +1", img='WAR/Blurred Shield.png', Fencer=true}
 	}
 	
 	AWeaponTable = {
@@ -47,6 +58,13 @@ function get_sets()
 		['cursna']	= function() equip(sets.Cursna) end,
 		['cure']	= function() equip(sets.Cure) end,
 		}
+		
+	build_GUI()
+	bind_keys()
+end
+
+function get_sets()
+	setup()
 	
 	Cichol = {}
 	Cichol.Acc = {name="Cichol's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','Accuracy+10','"Dbl.Atk."+10','Phys. dmg. taken -10%'}}
@@ -69,12 +87,14 @@ function get_sets()
 
 	sets.Obi = {waist="Hachirin-No-Obi"}
 	
+	sets.Grip = {sub="Utu Grip"}
+	
 	sets.Shield = {sub="Blurred Shield +1"}
 	
 	sets.enmity = {
 		head="Halitus Helm",
 		body="Emet Harness +1",
-		hands="Pummeler's Mufflers",
+		hands="Pummeler's Mufflers +1",
 		legs="Odyssean Cuisses",
 		neck="Moonlight Necklace",
 		waist="Kasiri Belt",
@@ -91,11 +111,12 @@ function get_sets()
 	sets.JA['Mighty Strikes'] = {hands="Agoge Mufflers"}
 	sets.JA['Blood Rage'] = {body="Boii Lorica"}
 	sets.JA['Warcry'] = {head="Agoge Mask +2"}
-	sets.JA['Berserk'] = {body="Pumm. Lorica +3",
+	sets.JA['Berserk'] = {main="Instigator",
+						  body="Pumm. Lorica +3",
 						  feet="Agoge Calligae +1"}
 	sets.JA['Tomahawk'] = {ammo="Throwing Tomahawk"}
 	sets.JA['Provoke'] = sets.enmity
-	sets.JA['Aggressor'] = {head="Pummeler's Mask",
+	sets.JA['Aggressor'] = {head="Pummeler's Mask +1",
 							body="Agoge Lorica"}
 	
 	sets.precast = {
@@ -155,7 +176,7 @@ function get_sets()
 		legs=Odyssean.Legs.WS,
 		feet="Sulevia's Leggings +2",
 		neck="War. Beads +1",
-		waist="Fotia Belt",
+		waist="Ioskeha Belt +1",
 		ear1="Ishvara Earring",
 		ear2="Moonshade Earring",
 		ring1="Niqmaddu Ring",
@@ -167,7 +188,10 @@ function get_sets()
 		legs="Pummeler's Cuisses +3"
 	})
 	
-	sets.WS.Upheaval.High = set_combine(sets.WS.Upheaval.Mid, {})
+	sets.WS.Upheaval.High = set_combine(sets.WS.Upheaval.Mid, {
+		feet="Pummeler's Calligae +3",
+		ear1="Telos Earring"
+	})
 	
 	sets.WS['Fell Cleave'] = {
 		ammo="Knobkierrie",
@@ -410,8 +434,20 @@ function get_sets()
 	-- Status Swaps --
 	
 	sets.Blind = {hands="Regal Captain's Gloves"}
-	
-	build_GUI()
+end
+
+function bind_keys()
+	send_command('bind f9 gs c cycle AccuracyMode')
+	send_command('bind f10 gs c set EngagedMode Hybrid')
+	send_command('bind f11 gs c set EngagedMode DT')
+	send_command('bind f12 gs c set EngagedMode Normal')
+end
+
+function file_unload()
+	send_command('unbind f9')
+	send_command('unbind f10')
+	send_command('unbind f11')
+	send_command('unbind f12')
 end
 
 function build_GUI()
@@ -445,7 +481,7 @@ function build_GUI()
 	}
 	WM:draw()
 	
-	FM = ToggleButton{
+	--[[FM = ToggleButton{
 		x = GUI_pos.x + 0,
 		y = GUI_pos.y + 54 * 2,
 		var = FencerMode,
@@ -453,7 +489,22 @@ function build_GUI()
 		iconDown = 'WAR/Fencer On.png',
 		command = 'gs c update'
 	}
-	FM:draw()
+	FM:draw()]]
+	
+	local oh = {}
+	for i,v in ipairs(Offhand) do
+		oh[i] = {img=OffhandTable[v].img, value=v}
+	end
+	OH_button = IconButton{
+		x = GUI_pos.x + 0,
+		y = GUI_pos.y + 54 * 2,
+		var = Offhand,
+		icons = oh,
+		command = function() OffhandMode:set('Manual'); windower.send_command('gs c update'); OH_button:hideoverlay()  end,
+		overlay = {img='WAR/Auto.png', hide_on_click = false},
+		--on_click = function() OffhandMode:set('Manual') end
+	}
+	OH_button:draw()
 	
 	AbbyM = ToggleButton{
 		x = GUI_pos.x + 0,
@@ -497,6 +548,15 @@ function build_GUI()
 		command = 'gs c update'
 	}
 	IdleDisplay:draw()
+	OHModeDisplay = TextCycle{
+		x = GUI_pos.x + 0,
+		y = GUI_pos.y + 54 * 5 + 32 * 2,
+		var = OffhandMode,
+		align = 'left',
+		width = 112,
+		command = function() if OffhandMode.value == 'Auto' then OH_button:showoverlay() else OH_button:hideoverlay() end end
+	}
+	OHModeDisplay:draw()
 end
 
 function self_command(commandArgs)
@@ -519,10 +579,12 @@ function get_weapons()
 		weps = AWeaponTable[AbysseaWeapon.value]
 	else
 		weps = WeaponTable[WeaponMode.value]
+		if weps.type == '1H' then
+			weps = set_combine(weps, OffhandTable[Offhand.value])	
+		else
+			weps = set_combine(weps, sets.Grip)
+		end
 	end
-	if FencerMode.value then
-		weps = set_combine(weps, sets.Shield)
-	end	
 	return weps
 end
 
@@ -535,9 +597,13 @@ function get_engaged_set() -- sets.engaged[DefenseMode].(DW or WeaponMode).Accur
 	if equipset[EngagedMode.value] then
 		equipset = equipset[EngagedMode.value]
 	end
-	if equipset[WeaponMode.value] then -- sets.engaged[DefenseMode].Chango or something if desired
+	if equipset[WeaponMode.value] then -- sets.engaged[DefenseMode].Chango or something if desired.  Can also do .mainhand.offhand if you wanna get specific
 		equipset = equipset[WeaponMode.value]
-	elseif equipset.DW and WeaponTable[WeaponMode.value].DW and not FencerMode.value and (player.sub_job == 'DNC' or player.sub_job == 'NIN') then
+		if equipset[OffhandMode.value] then
+			equipset = equipset[OffhandMode.value]
+		end		
+	end
+	if equipset.DW and WeaponTable[WeaponMode.value].type == '1H' and OffhandTable[Offhand.value].DW and (player.sub_job == 'DNC' or player.sub_job == 'NIN') then
 		equipset = equipset.DW
 	end
 	if equipset[AccuracyMode.value] then
@@ -556,11 +622,30 @@ function get_engaged_set() -- sets.engaged[DefenseMode].(DW or WeaponMode).Accur
 end
 
 function update_gear() -- will put on the appropriate engaged or idle set
+	if OffhandMode.value == 'Auto' then
+		auto_offhand()
+	end
 	if player.status == 'Engaged' then
 		equip(get_engaged_set())
 	else
 		equip(get_idle_set())
-		--equip(get_weapons())
+	end
+end
+
+function auto_offhand()
+	if WeaponTable[WeaponMode.value].type == '1H' then
+		local OH = ''
+		if player.sub_job ==  'DNC' or player.sub_job == 'NIN' then
+			OH = WeaponTable[WeaponMode.value].offhand.default
+			for i, v in ipairs(WeaponTable[WeaponMode.value].offhand) do
+				if buffactive[v.buff] then
+					OH = v.weapon
+				end
+			end
+		else
+			OH = sets.Shield.sub
+		end
+		Offhand:set(OH)
 	end
 end
 
@@ -594,7 +679,7 @@ function precast(spell, action)
 		if equipset['Brazen Rush'] and buffactive['Brazen Rush'] then
 			equipset = equipset['Brazen Rush']
 		end
-		if equipset.Fencer and FencerMode.value then
+		if equipset.Fencer and OffhandTable[Offhand.value].Fencer then
 			equipset=equipset.Fencer
 		end
 		if equipset.TP then -- sets.WS['Impulse Drive'].TP[2000].Mid.Day will be used when over 2000 TP
