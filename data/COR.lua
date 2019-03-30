@@ -1029,6 +1029,9 @@ end
 
 function buff_change(buff,gain)
 	if buff == 'Sleep' or buff == 'Lullaby' then update_gear() end
+	if buff == 'Flurry' and not gain then
+		flurry = 0
+	end
 end
 
 function precast(spell,action)
