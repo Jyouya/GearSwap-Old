@@ -1,5 +1,6 @@
 require('Modes')
 require('Gui')
+require('DualWieldCalc')
 
 function setup()
 	AccuracyMode = M{['description']='Accuracy Mode', 'Normal', 'Mid', 'High'}
@@ -11,10 +12,11 @@ function setup()
 	Offhand = M{['description']='Offhand', 'Reikiko', 'Barbarity +1', 'Digirbalag', 'Blurred Shield +1'}
 	AbysseaWeapon = M{['description']='Weapon', 'Dagger', 'Sword', 'Greatsword', 'Scythe', 'Spear', 'Club', 'Staff'}
 	
-	FencerMode = M(false, 'Equip Shield') -- will overwrite offhand with blurred shield if true
-	
 	EngagedMode = M{['description']='Engaged Mode', 'Normal', 'Hybrid', 'DT'}
 	IdleMode = M{['description']='Idle Mode', 'Normal', 'Fell Cleave'} -- Normal idel gear or Su3 for fell cleave
+	
+	DWMode = M{['description']='Dual Wield Mode', 'Auto', 'Manual'}
+	DWLevel = M{['description']='Dual Wield Level', '11', '15', '21', '25'}
 	
 	Obi_WS = T{ -- Any weaponskills we want to check weather/day and use the obi
 		'Cloudsplitter',
@@ -50,10 +52,10 @@ function setup()
 	}
 	
 	selfCommandMaps = {
-		['set']		= function(arg) _G[arg[1]]:set(table.concat(table.slice(arg, 2, -1)," ")) end, 
-		['toggle']	= function(arg) _G[arg[1]]:toggle() end,
-		['cycle']	= function(arg) _G[arg[1]]:cycle() end,
-		['cycleback']	= function(arg) _G[arg[1]]:cycleback() end,
+		['set']		= function(arg) _G[arg[1]]:set(table.concat(table.slice(arg, 2, -1)," ")); update_gear() end, 
+		['toggle']	= function(arg) _G[arg[1]]:toggle(); update_gear() end,
+		['cycle']	= function(arg) _G[arg[1]]:cycle(); update_gear() end,
+		['cycleback']	= function(arg) _G[arg[1]]:cycleback(); update_gear() end,
 		['update']	= update_gear,
 		['cursna']	= function() equip(sets.Cursna) end,
 		['cure']	= function() equip(sets.Cure) end,
@@ -61,6 +63,8 @@ function setup()
 		
 	build_GUI()
 	bind_keys()
+	local dw_level = get_dw_level()
+	DWLevel:set(tostring(dw_level))
 end
 
 function get_sets()
@@ -71,6 +75,7 @@ function get_sets()
 	Cichol.STR = {name="Cichol's Mantle", augments={'STR+20','Accuracy+20 Attack+20','STR+10','"Dbl. Atk."+10','Phys. dmg. taken -10%'}}
 	Cichol.VIT = {name="Cichol's Mantle", augments={'VIT+20','Accuracy+20 Attack+20','VIT+10','Weapon skill damage +10%'}}
 	Cichol.WSD = {name="Cichol's Mantle", augments={'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%','Phys. dmg. taken -10%'}}
+	Cichol.DW  = {name="Cichol's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','Accuracy+10','"Dbl.Atk."+10','Phys. dmg. taken -10%'}} -- Dual Wield Cape
 	
 	Odyssean = {}
 	Odyssean.Hands = {}
@@ -383,6 +388,47 @@ function get_sets()
 		ring2="Moonlight Ring",
 	})
 	
+	sets.engaged.DW['11'] = sets.engaged.DW
+	
+	sets.engaged.DW['15'] = set_combine(sets.engaged.DW, {
+		ear1="Eabani Earring",
+	})
+	
+	sets.engaged.DW['15'].Mid = set_combine(sets.engaged.DW.Mid, {
+		ear1="Eabani Earring",
+	})
+	
+	sets.engaged.DW['15'].High = set_combine(sets.engaged.DW.High, {
+		ear1="Eabani Earring",
+	})
+	
+	sets.engaged.DW['21'] = set_combine(sets.engaged.DW, {
+		back=Cichol.DW,
+	})
+	
+	sets.engaged.DW['21'].Mid = set_combine(sets.engaged.DW.Mid, {
+		back=Cichol.DW,
+	})
+	
+	sets.engaged.DW['21'].High = set_combine(sets.engaged.DW.High, {
+		back=Cichol.DW,
+	})
+	
+	sets.engaged.DW['25'] = set_combine(sets.engaged.DW, {
+		ear1="Eabani Earring",
+		back=Cichol.DW
+	})
+	
+	sets.engaged.DW['25'].Mid = set_combine(sets.engaged.DW.Mid, {
+		ear1="Eabani Earring",
+		back=Cichol.DW
+	})
+	
+	sets.engaged.DW['25'].High = set_combine(sets.engaged.DW.High, {
+		ear1="Eabani Earring",
+		back=Cichol.DW
+	})
+	
 	sets.engaged.Hybrid = {
 		ammo="Staunch Tathlum +1",
 		head="Flamma Zucchetto +2",
@@ -512,7 +558,7 @@ function build_GUI()
 		var = AbysseaMode,
 		iconUp = 'WAR/Atomos.png',
 		iconDown = 'WAR/Atomos.png',
-		command = function() if AbysseaMode.value then AbbyW:show()	else AbbyW:hide() end windower.send_command('gs c update') end
+		command = function() if AbysseaMode.value then AbbyW:enable(); AbbyW:show() else AbbyW:disable(); AbbyW:hide() end windower.send_command('gs c update') end
 	}
 	AbbyM:draw()
 	
@@ -554,9 +600,31 @@ function build_GUI()
 		var = OffhandMode,
 		align = 'left',
 		width = 112,
-		command = function() if OffhandMode.value == 'Auto' then OH_button:showoverlay() else OH_button:hideoverlay() end end
+		command = function() if OffhandMode.value == 'Auto' then OH_button:showoverlay(); windower.send_command('gs c update') else OH_button:hideoverlay() end end
 	}
 	OHModeDisplay:draw()
+	HMDisplay = TextCycle{
+		x = GUI_pos.x + 0,
+		y = GUI_pos.y + 54 * 5 + 32 * 3,
+		var = DWMode,
+		align = 'left',
+		width = 112,
+		command = function() windower.send_command('gs c update') end,
+		start_hidden = true,
+		disabled = true
+	}
+	HMDisplay:draw()
+	DWDisplay = TextCycle{
+		x = GUI_pos.x + 0,
+		y = GUI_pos.y + 54 * 5 + 32 * 4,
+		var = DWLevel,
+		align = 'left',
+		width = 112,
+		command = function() DWMode:set('Manual'); windower.send_command('gs c update') end,
+		start_hidden = true,
+		disabled = true
+	}
+	DWDisplay:draw()
 end
 
 function self_command(commandArgs)
@@ -589,6 +657,10 @@ function get_weapons()
 end
 
 function get_idle_set()
+	local dw_level = get_dw_level()
+	if dw_level ~= DWLevel.value and DWMode.value == 'Auto' then
+		DWLevel:set(tostring(dw_level))
+	end
 	return set_combine(sets.idle[IdleMode.value], get_weapons())
 end
 
@@ -605,6 +677,13 @@ function get_engaged_set() -- sets.engaged[DefenseMode].(DW or WeaponMode).Accur
 	end
 	if equipset.DW and WeaponTable[WeaponMode.value].type == '1H' and OffhandTable[Offhand.value].DW and (player.sub_job == 'DNC' or player.sub_job == 'NIN') then
 		equipset = equipset.DW
+		local dw_level = get_dw_level()
+		if dw_level ~= DWLevel.value and DWMode.value == 'Auto' then
+			DWLevel:set(tostring(dw_level))
+		end
+		equipset = equipset[DWLevel.value]
+		
+		
 	end
 	if equipset[AccuracyMode.value] then
 		equipset = equipset[AccuracyMode.value]
@@ -625,6 +704,18 @@ function update_gear() -- will put on the appropriate engaged or idle set
 	if OffhandMode.value == 'Auto' then
 		auto_offhand()
 	end
+	if WeaponTable[WeaponMode.value].type == '1H' and OffhandTable[Offhand.value].DW then
+		HMDisplay:enable()
+		HMDisplay:show()
+		DWDisplay:enable()
+		DWDisplay:show()
+	else
+		HMDisplay:disable()
+		HMDisplay:hide()
+		DWDisplay:disable()
+		DWDisplay:hide()
+	end
+	
 	if player.status == 'Engaged' then
 		equip(get_engaged_set())
 	else
@@ -642,6 +733,7 @@ function auto_offhand()
 					OH = v.weapon
 				end
 			end
+			
 		else
 			OH = sets.Shield.sub
 		end
@@ -743,3 +835,28 @@ end
 function status_change(new, action)
 	update_gear()
 end
+
+function buff_change(buff, gain)
+	if buff == 'Haste' and not gain then
+		Haste_Level = 0
+	end
+	local dw_level = get_dw_level()
+	if dw_level ~= DWLevel.value then
+		DWLevel:set(tostring(dw_level))
+		update_gear()
+	end
+end
+
+function get_dw_level()
+	local dw_needed = get_dw_needed()
+	local dw_level = math.max(unpack(DWLevel))
+	for i, dw in ipairs(DWLevel) do -- find the lowest dw that is >= dw_needed
+		if tonumber(dw) < dw_level and tonumber(dw) >= dw_needed then
+			dw_level = tonumber(dw)
+		end
+	end
+	return dw_level
+end
+
+
+
