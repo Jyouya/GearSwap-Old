@@ -6,7 +6,7 @@ function setup()
 	AccuracyMode = M{['description']='Accuracy Mode', 'Normal', 'Mid', 'High'}
 	
 	AbysseaMode = M(false, 'Abyssea Mode')
-	OffhandMode = M{['description']='Offhand Mode', 'Manual', 'Auto'}
+	OffhandMode = M{['description']='Offhand Mode', 'Auto', 'Manual'}
 	
 	WeaponMode = M{['description']='Weapon', 'Chango', 'Montante +1', 'Shining One', 'Kaja Staff', 'Kaja Axe', 'Kaja Sword'}
 	Offhand = M{['description']='Offhand', 'Reikiko', 'Barbarity +1', 'Digirbalag', 'Blurred Shield +1'}
@@ -47,7 +47,7 @@ function setup()
 		['Greatsword']={main="Claymore", img='WAR/Claymore.png'},
 		['Scythe']={main="Bronze Zaghnal", img='WAR/Bronze Zaghnal.png'},
 		['Spear']={main="Harpoon", img='WAR/Harpoon.png'},
-		['Club']={main="Ash Club", img='WAR/Ash Club.png'},
+		['Club']={main="Soulflayer's Wand", img='WAR/Ash Club.png'},
 		['Staff']={main="Ash Staff", img='WAR/Ash Staff.png'}
 	}
 	
@@ -252,7 +252,7 @@ function get_sets()
 		ear2="Cessance Earring"
 	})
 	
-	--[[sets.WS.Resolution['Mighty Strikes'] = {
+	sets.WS.Resolution['Mighty Strikes'] = {
 		ammo="Seething Bomblet +1",
 		head="Flamma Zucchetto +2",
 		body="Argosy Hauberk +1", -- get some crit valorous augs
@@ -265,8 +265,8 @@ function get_sets()
 		ear2="Moonshade Earring",
 		ring1="Niqmaddu Ring",
 		ring2="Regal Ring",
-		back=Cichol.STR}
-	}]]
+		back=Cichol.STR
+	}
 	
 	-- Spear Weaponskills --
 	
@@ -551,6 +551,7 @@ function build_GUI()
 		--on_click = function() OffhandMode:set('Manual') end
 	}
 	OH_button:draw()
+	OH_button:showoverlay()
 	
 	AbbyM = ToggleButton{
 		x = GUI_pos.x + 0,

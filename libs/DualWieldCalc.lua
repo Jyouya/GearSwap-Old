@@ -40,7 +40,11 @@ function get_MA_haste() -- result undefined if gearswap's vars are not loaded.
 	if Haste_Level == 2 then -- rest of haste 2
 		ma_haste = ma_haste + 157
 	end
-	if buffactive['march'] then -- First march is honor march
+	for i = 1, buffactive['march'] or 0, 1 do
+		ma_haste = ma_haste + MarchInfo[Marches[i]]
+		print(Marches[i])
+	end
+	--[[if buffactive['march'] then -- First march is honor march
 		ma_haste = ma_haste + 174
 		if buffactive['march'] > 1 then -- second is victory march
 			ma_haste = ma_haste + 293
@@ -48,7 +52,7 @@ function get_MA_haste() -- result undefined if gearswap's vars are not loaded.
 		if buffactive['march'] > 2 then -- advancing march for some reason
 			ma_haste = ma_haste + 194
 		end
-	end
+	end]]
 	if buffactive['embrava'] then
 		ma_haste = ma_haste + 266
 	end
@@ -62,6 +66,21 @@ function get_MA_haste() -- result undefined if gearswap's vars are not loaded.
 end
 
 Haste_Level = 0
+Marches = {'Honor March','Victory March','Advancing March'} -- Have a list with all three, and just order them by the most recent
+MarchInfo = {
+	['Honor March'] = 174,
+	['Victory March'] = 293,
+	['Advancing March'] = 194,
+}
+function Add_March(march)
+	for i = 1, 3 do
+		if Marches[i] == march then
+			table.remove(Marches, i)
+			table.insert(Marches, 1, march)
+			break
+		end
+	end
+end
 
 windower.raw_register_event('action',
     function(act)
@@ -81,6 +100,12 @@ windower.raw_register_event('action',
                     Haste_Level = 1
                 elseif param == 511 then
                     Haste_Level = 2
+				elseif param == 417 then -- honor march
+					Add_March('Honor March')
+				elseif param == 420 then -- victory march
+					Add_March('Victory March')
+				elseif param == 419 then -- advancing march
+					Add_March('Advancing March')
                 end
             end
         end
