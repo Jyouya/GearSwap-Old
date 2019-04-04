@@ -18,6 +18,7 @@ enabled = true
 local midshot = false
 local timeout = 0
 useAM = false
+ws_tp = 1000
 
 local action_events = {
     [2] = 'mid /ra',
@@ -244,14 +245,15 @@ function process_queue()
         pending = queue:pop()
     elseif target then
 		w = aftermath_weaponskills[player.equipment.range]
-        if weaponskill and able_to_use_weaponskill() and (not useAM or not w or isBuffActive(w.buff)) then
+		p = windower.ffxi.get_player()
+        if weaponskill and able_to_use_weaponskill() and p.vitals.tp >= ws_tp and (not useAM or not w or isBuffActive(w.buff)) then
             pending = {
                 ['prefix'] = '/weaponskill',
                 ['english'] = weaponskill,
                 ['target'] = target,
                 ['action_type'] = 'Ability',
             }
-		elseif useAM and w and windower.ffxi.get_player().vitals.tp >= w.tp then
+		elseif useAM and w and p.vitals.tp >= w.tp then
 			pending = {
 				['prefix'] = '/weaponskill',
                 ['english'] = w.ws,
@@ -428,6 +430,15 @@ register_unhandled_command(function (...)
 				completion = false
 				timeout = nil
 				queue:clear()
+			elseif cmd == 'tp' then
+				if type(tonumber(args[1])) ~= 'number' then
+					windower.add_to_chat(200, "Rnghelper : Invalid argument")
+				elseif tonumber(args[1]) >= 1000 and tonumber(args[1]) <= 3000 then
+					ws_tp = tonumber(args[1])
+					windower.add_to_chat(200, "Rnghelper : Auto weaponskill at %d TP":format(ws_tp))
+				else
+					windower.add_to_chat(200, "Rnghelper : Argument out of bounds")
+				end
 			elseif T{'enable','on','start'}:contains(cmd) then
 				if enabled then
 					windower.add_to_chat(200, "Rnghelper : Already enabled")
