@@ -1,17 +1,23 @@
 require('rnghelper')
 require('modes')
 require('GUI')
---require('yayahelper')
+require('DualWieldCalc')
+res = require('resources')
+packets = require('packets')
+require('cor.include')
+
 
 function get_sets()
-	require('cor.include')
-	--require('cor.RA.v3')
-	--require('cor.roller')
-	res = require('resources')
-	packets = require('packets')
-	--setupRoller()
-	--setupRA()
-	
+	bind_keys()
+	setup()
+	require('COR-%s-Gear':format(player.name))
+	build_gearsets()
+		
+	--send_command('lua load gearinfo')
+	build_UI()
+end
+
+function bind_keys()
 	-- set keybinds
 	send_command('bind f9 gs c cycle meleeAccuracy')
 	send_command('bind ^f9 gs c cycle rangedAccuracy')
@@ -35,8 +41,35 @@ function get_sets()
 	send_command('bind numpad0 input /ra <t>')
 	send_command('bind numpad. gs c QD 1')
 	send_command('bind ^numpad. gs c QD 2')
+end
+
+function file_unload() -- unbind hotkeys
+	send_command('lua u gearinfo')
+	send_command('unbind f9')
+	send_command('unbind ^f9')
+	send_command('unbind !f9')
+	send_command('unbind @f9')
 	
+	send_command('unbind f10')
+	send_command('unbind ^f10')
 	
+	send_command('unbind f11')
+	send_command('unbind ^f11')
+	send_command('unbind !f11')
+	
+	send_command('unbind f12')
+	send_command('unbind ^f12')
+	send_command('unbind !f12')
+	
+	send_command('unbind ^-')
+	send_command('unbind ^=')
+	
+	send_command('unbind numpad0')
+	send_command('unbind numpad.')
+	send_command('unbind ^numpad.')
+end
+
+function setup()
 	selfCommandMaps = {
 		['set']		= handle_set,
 		['toggle']	= handle_toggle,
@@ -75,6 +108,11 @@ function get_sets()
 	DDMode = M{['description']='DD Mode', 'Normal', 'Hybrid', 'Emergancy DT'}
 	emergancyDT = M(false,'Emegancy DT')
 	
+	DWLevel = M{['description']='Dual Wield Level', '11', '15'}
+	
+	local dw_level = get_dw_level()
+	DWLevel:set(tostring(dw_level))
+	
 	DW_Needed = 11
 	DW = true
 	haste_sets = {
@@ -86,607 +124,14 @@ function get_sets()
 	autofacetarget = true
 	rm_target = nil
 	moving = true
-	
-	herc = {}
-	herc.feet = {}
-	herc.feet.DT = { name="Herculean Boots", augments={ 'Pet: "Dbl. Atk."+3',
-														'Phys. dmg. taken -2%',
-														'Damage taken-3%',
-														'Accuracy+11 Attack+11',
-														'Mag. Acc.+3 "Mag.Atk.Bns."+3',}}
-	herc.feet.WSDAGI = { name="Herculean Boots", augments={	'Accuracy+23 Attack+23',
-															'Weapon skill damage +4%',
-															'AGI+8',
-															'Accuracy+6',
-															'Attack+7',}}
-	herc.feet.TA =  {name="Herculean Boots", augments={ 'Accuracy+29',
-														'"Triple Atk."+4',
-														'DEX+5',}}
-	herc.legs = {}
-	herc.legs.LastStand = { name="Herculean Trousers", augments={'Rng.Acc.+28','Weapon skill damage +4%','DEX+1','Rng.Atk.+2',}}
-	herc.legs.Leaden = { name="Herculean Trousers", augments={'Mag. Acc.+20 "Mag.Atk.Bns."+20','Phys. dmg. taken -1%','MND+2','Mag. Acc.+7','"Mag.Atk.Bns."+13',}}
-	herc.hands = {}
-	herc.hands.Leaden = { name="Herculean Gloves", augments={'Mag. Acc.+20 "Mag.Atk.Bns."+20','"Fast Cast"+3','Mag. Acc.+6','"Mag.Atk.Bns."+13',}}
-	herc.head = {}
-	herc.head.Savage =  { name="Herculean Helm", augments={'Rng.Acc.+12','Weapon skill damage +3%','STR+6','Accuracy+15','Attack+13',}}
-	herc.head.Wildfire = { name="Herculean Helm", augments={'Mag. Acc.+16 "Mag.Atk.Bns."+16','Crit.hit rate+1','Mag. Acc.+15','"Mag.Atk.Bns."+15',}}
-	
-	Adhemar = {}
-	Adhemar.Head = {}
-	Adhemar.Head.PathD = { name="Adhemar Bonnet +1", augments={'HP+105','Attack+13','Phys. dmg. taken -4',}}
-	Adhemar.Body = {}
-	Adhemar.Body.PathA = { name="Adhemar Jacket +1", augments={'DEX+12','AGI+12','Accuracy+20',}}
-	Adhemar.Legs = {}
-	Adhemar.Legs.PathC = { name="Adhemar Kecks +1", augments={'AGI+12','Rng.Acc.+20','Rng.Atk.+20',}}
-	Adhemar.Legs.PathD = { name="Adhemar Kecks +1", augments={'AGI+12','"Rapid Shot"+13','Enmity-6',}}
-	Adhemar.Hands = {}
-	Adhemar.Hands.PathA = { name="Adhemar Wrist. +1", augments={'DEX+12','AGI+12','Accuracy+20',}}
-	Adhemar.Hands.PathC = { name="Adhemar Wrist. +1", augments={'AGI+12','Rng.Acc.+20','Rng.Atk.+20',}}
-														
-	-- CAPES --
-	Camulus = {}
-	Camulus.DA = { name="Camulus's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','DEX+10','"Dbl.Atk."+10','Magic dmg. taken-10%',}}
-	Camulus.rSTP = { name="Camulus's Mantle", augments={'AGI+20','Rng.Acc.+20 Rng.Atk.+20','"Store TP"+10','Damage taken-5%',}}
-	
-	Camulus.Savage = { name="Camulus's Mantle", augments={'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%','Damage taken-5%',}}
-	Camulus.LastStand = { name="Camulus's Mantle", augments={'AGI+20','Rng.Acc.+20 Rng.Atk.+20','AGI+10','Weapon skill damage +10%','Damage taken-5%',}}
-	Camulus.LeadenSalute = { name="Camulus's Mantle", augments={'AGI+20','Mag. Acc+20 /Mag. Dmg.+20','AGI+10','Weapon skill damage +10%','Damage taken-5%',}}
-	
-	Camulus.Snapshot = { name="Camulus's Mantle", augments={'INT+20','Eva.+20 /Mag. Eva.+20','"Snapshot"+10','Damage taken-5%',}}
-	Camulus.Fastcast = { name="Camulus's Mantle", augments={'HP+60','"Fast Cast"+10',}}
-	
-	-- JAs
-	sets.JA= {}
-	
-	sets.JA['Snake Eye'] = {legs="Lanun Trews"}
-	sets.JA['Wild Card'] = {feet="Lanun Bottes +3"}
-	sets.JA['Random Deal'] = {body="Lunan Frac +3"}
-
-	sets.JA['Phantom Roll'] = {
-		range="Compensator",
-		head="Lanun Tricorne",
-		body="Meg. Cuirie +2", --8/0
-		hands="Chasseur's Gants +1",
-		legs="Desultor Tassets",
-		feet=herc.feet.DT, --3/0
-		neck="Regal Necklace", 
-		ear1="Genmei Earring", --2/0
-		ear2="Etiolation Earring", --0/3
-		ring1="Barataria Ring",
-		ring2="Luzaf's Ring", --10/10
-		back=Camulus.Snapshot,
-		waist="Flume Belt",} --4/0
-		
-	sets.JA['Double-Up'] = {
-		--main=Rostam.PathC,
-		ring2="Luzaf's Ring"}
-		
-	sets.JA["Caster's Roll"] = set_combine(sets.JA['Phantom Roll'], {legs="Chas. Culottes +1"})
-	sets.JA["Courser's Roll"] = set_combine(sets.JA['Phantom Roll'], {feet="Chaseur's Bottes +1"})
-	sets.JA["Blitzer's Roll"] = set_combine(sets.JA['Phantom Roll'], {head="Chasseur's Tricorne +1"})
-	sets.JA["Tactician's Roll"] = set_combine(sets.JA['Phantom Roll'], {body="Chasseur's Frac +1"})
-	sets.JA["Allies' Roll"] = set_combine(sets.JA['Phantom Roll'], {hands="Chasseur's Gants +1"})
-	
-	sets.JA.FoldDoubleBust = {hands="Lanun Gants +3"}
-	
-	sets.JA.Quickdraw = {}
-	sets.JA.Quickdraw.Damage = {}
-	sets.JA.Quickdraw.Accuracy = {
-		ammo="Living Bullet",
-		head="Oshosi Mask +1",
-		neck="Commodore Charm +2",
-		ear1="Gwati Earring",
-		ear2="Dignitary's Earring",
-		body="Mummu Jacket +2",
-		hands="Mummu Wrists +2",
-		ring1="Rahab Ring",
-		ring2="Kishar Ring",
-		back=Camulus.LeadenSalute,
-		waist="Kwahu Kachina Belt +1",
-		legs="Mummu Kecks +2",
-		feet="Oshosi Leggings +1",}
-	sets.JA.Quickdraw['Store TP'] = {
-		ammo="Living Bullet",
-		neck="Iskur Gorget",
-		ear1="Enervating Earring",
-		ear2="Dignitary's Earring",
-		body="Mummu Jacket +2",
-		hands=Adhemar.Hands.PathC,
-		ring1="Chirich Ring +1",
-		ring2="Ilabrat Ring",
-		back=Camulus.Quickdraw,
-		waist="Kentarch Belt +1",
-		legs="Chas. Culottes +1",
-		feet="Mummu Gamashes +2"}
-	
-	sets.precast = {
-		head="Herculean Helm",
-		neck="Baetyl Pendant",
-		hands="Leyline Gloves",
-		ring1="Rahab Ring",
-		ring2="Kishar Ring",
-		back=Camulus.Fastcast,}
-		
-	sets.precast.Waltz = {}
-	
-	sets.precast.Utsusemi = set_combine(sets.precast, {
-		})
-	
-	sets.precast.RA = {
-		ammo="Chrono Bullet",
-		head="Taeon Chapeau",
-		neck="Commodore Charm +2",
-		body="Laksamana's Frac +3",
-		hands="Carmine Fin. Ga. +1",
-		legs="Laksamana's Trews +3",
-		feet="Meg. Jam. +2",
-		back=Camulus.Snapshot,
-		waist="Impulse Belt",}
-		
-	sets.precast.RA.Flurry1 = {
-		ammo="Chrono Bullet",
-		head="Taeon Chapeau",
-		neck="Commodore Charm +2",
-		body="Laksamana's Frac +3",
-		hands="Carmine Fin. Ga. +1",
-		legs=Adhemar.Legs.PathD,
-		feet="Meg. Jam. +2",
-		back=Camulus.Snapshot,
-		waist="Yameya Belt",}
-		
-	sets.precast.RA.Flurry2 = {
-		ammo="Chrono Bullet",
-		head="Chass. Tricorne +1",
-		neck="Commodore Charm +2",
-		body="Laksamana's Frac +3",
-		hands="Carmine Fin. Ga. +1",
-		legs=Adhemar.Legs.PathD,
-		feet="Pursuer's Gaiters",
-		back=Camulus.Snapshot,
-		waist="Yameya Belt",}
-		
-	-- WS Sets	
-	
-	sets.WS = {}
-	sets.WS.Physical = {}
-	sets.WS.Magic = {}
-	sets.WS.Ranged = {}
-		
-	sets.WS.Physical.Normal = {
-		ammo="Chrono Bullet",
-		head=herc.head.Savage,
-		body="Laksa. Frac +3",
-		hands="Meg. Gloves +2",
-		legs="Meg. Chausses +2",
-		feet="Lanun Bottes +3",
-		neck="Commodore Charm +2",
-		waist="Metalsinger Belt",
-		left_ear="Moonshade Earring",
-		right_ear="Ishvara Earring",
-		left_ring="Shukuyu Ring",
-		right_ring="Rufescent Ring",
-		back=Camulus.Savage -- str wsd cape
-		}
-		
-	sets.WS.Physical.Mid = set_combine(sets.WS.Physical.Normal, {
-		head="Meghanada Visor +2"
-		})
-		
-	sets.WS.Physical.Acc = set_combine(sets.WS.Physical.Mid, {
-		--combatant's torque
-		})
-	
-	sets.WS.Magic.Normal = {
-		ammo="Living Bullet",
-		head=herc.head.Savage,
-		body="Lanun Frac +3",
-		hands="Carmine Fin. Ga. +1",
-		legs=herc.legs.Leaden,
-		feet="Lanun Bottes +3",
-		neck="Commodore Charm +2",
-		left_ear="Moonshade Earring",
-		right_ear="Friomisi Earring",
-		left_ring="Ilabrat Ring",
-		right_ring="Dingir Ring",
-		back=Camulus.LeadenSalute,
-		waist="Eschan Stone",
-		}
-		
-	sets.WS.Magic.Mid = set_combine(sets.WS.Magic.Normal, {
-		right_ear="Hermetic Earring",
-		})
-		
-	sets.WS.Magic.Acc = set_combine(sets.WS.Magic.Mid, {
-		})
-		
-	sets.WS.Ranged.Normal = {
-		ammo="Chrono Bullet",
-		head="Meghanada Visor +2",
-		body="Laksa. Frac +3",
-		hands="Meg. Gloves +2",
-		legs=herc.legs.LastStand,
-		feet="Lanun Bottes +3",
-		neck="Fotia Gorget",
-		waist="Light Belt",
-		left_ear="Moonshade Earring",
-		right_ear="Ishvara Earring",
-		left_ring="Dingir Ring",
-		right_ring="Ilabrat Ring",
-		back=Camulus.LastStand,}	
-		
-	sets.WS.Ranged.Mid = set_combine(sets.WS.Ranged.Normal, {
-		neck="Iskur Gorget",
-		--ear2="Telos Earring",
-	})
-	
-	sets.WS.Ranged.Acc = set_combine(sets.WS.Ranged.Mid, {
-		ring1="Hajduk Ring +1",
-		--ring2="Hajduk Ring +1",
-		--ear2="Telos Earring",
-	})
-	
-	sets.WS['Last Stand'] = {
-		ammo="Chrono Bullet",
-		head="Meghanada Visor +2",
-		body="Laksa. Frac +3",
-		hands="Meg. Gloves +2",
-		legs=herc.legs.LastStand,
-		feet="Lanun Bottes +3",
-		neck="Fotia Gorget",
-		waist="Light Belt",
-		left_ear="Moonshade Earring",
-		right_ear="Ishvara Earring",
-		left_ring="Dingir Ring",
-		right_ring="Ilabrat Ring",
-		back=Camulus.LastStand,}	
-	
-	sets.WS['Last Stand'].Mid = set_combine(sets.WS['Last Stand'], {
-		neck="Iskur Gorget",
-		--ear2="Telos Earring",
-		})
-	
-	sets.WS['Last Stand'].Mid.fullTP = set_combine(sets.WS['Last Stand'].Mid, {
-		ear1="Ishvara Earring",
-		})
-	
-	sets.WS['Last Stand'].Acc = set_combine(sets.WS['Last Stand'].Mid, {
-		ring1="Hajduk Ring +1",
-		--ring2="Hajduk Ring +1",
-		waist="K. Kachina Belt",
-		})
-	
-	sets.WS['Last Stand'].Acc.fullTP = set_combine(sets.WS['Last Stand'].Acc, {
-		ear1="Ishvara Earring",
-		})
-		
-	sets.WS['Leaden Salute'] =  {
-		ammo="Living Bullet",
-		head="Pixie Hairpin +1",
-		body="Lanun Frac +3",
-		hands=herc.hands.Leaden,
-		legs=herc.legs.Leaden,
-		feet="Lanun Bottes +3",
-		neck="Commodore Charm +2",
-		ear1="Moonshade Earring",
-		ear2="Friomisi Earring",
-		ring1="Dingir Ring",
-		ring2="Archon Ring",
-		back=Camulus.LeadenSalute,
-		waist="Eschan Stone",
-		}
-		
-	sets.WS['Leaden Salute'].Mid = set_combine(sets.WS['Leaden Salute'], {
-		ear2="Hermetic Earring",
-		})
-		
-	sets.WS['Leaden Salute'].Mid.fullTP = set_combine(sets.WS['Leaden Salute'].Mid, {
-		ear1="Friomisi Earring",
-		})
-		
-	sets.WS['Leaden Salute'].Acc = sets.WS['Leaden Salute'].Mid -- should have the fullTP set too, since pass by reference
-	
-	sets.WS['Wildfire'] =  {
-		ammo="Living Bullet",
-		head=herc.head.Wildfire,
-		body="Lanun Frac +3",
-		hands=herc.hands.Leaden,
-		legs=herc.legs.Leaden,
-		feet="Lanun Bottes +3",
-		neck="Commodore Charm +2",
-		ear1="Moonshade Earring",
-		ear2="Friomisi Earring",
-		ring1="Dingir Ring",
-		ring2="Ilabrat Ring", -- regal ring or WSD ring
-		back=Camulus.LeadenSalute,
-		waist="Eschan Stone",
-		}
-		
-	sets.WS['Wildfire'].Mid = set_combine(sets.WS['Wildfire'], {
-		ear2="Hermetic Earring",
-		})
-		
-	sets.WS['Wildfire'].Mid.fullTP = set_combine(sets.WS['Wildfire'].Mid, {
-		ear1="Friomisi Earring",
-		})
-		
-	sets.WS['Wildfire'].Acc = sets.WS['Wildfire'].Mid
-	
-	sets.WS['Hot Shot'] =  {
-		ammo="Living bullet",
-		head="Herculean Helm",
-		body="Lanun Frac +3",
-		hands=herc.hands.Leaden,
-		legs=herc.legs.Leaden,
-		feet="Lanun Bottes +3",
-		neck="Commodore Charm +2",
-		ear1="Moonshade Earring",
-		ear2="Friomisi Earring",
-		ring1="Dingir Ring",
-		ring2="Ilabrat Ring",
-		back=Camulus.LastStand,
-		waist="Light Belt",
-		}
-		
-	sets.WS['Hot Shot'].Mid = set_combine(sets.WS['Hot Shot'], {
-		--ammo="Devestating Bullet"
-		ring2="Hajduk Ring +1",
-		})
-	
-	sets.WS['Hot Shot'].Acc = set_combine(sets.WS['Hot Shot'].Mid, {
-		ring1="Hajduk Ring +1",
-		waist="K. Kachina Belt +1",
-		})
-		
-	sets.WS['Evisceration'] = {
-		head="Mummu Bonnet +1",
-		body="Meg. Cuirie +2",
-		hands="Mummu Wrists +2",
-		legs="Mummu Kecks +2",
-		feet="Mummu Gamash. +1",
-		neck="Fotia Gorget",
-		ear1="Moonshade Earring",
-		ear2="Brutal Earring",
-		ring1="Regal Ring",
-		ring2="Ilabrat Ring",
-		back=Camulus.DA,
-		waist="Fotia Belt",}
-	
-	sets.WS['Savage Blade'] = {
-		head=herc.head.Savage,
-		body="Laksa. Frac +3",
-		hands="Meg. Gloves +2",
-		legs="Meg. Chausses +2",
-		feet="Lanun Bottes +3",
-		neck="Commodore Charm +2",
-		waist="Metalsinger Belt",
-		ear1="Moonshade Earring",
-		ear2="Ishvara Earring",
-		ring1="Shukuyu Ring",
-		ring2="Rufescent Ring",
-		back=Camulus.Savage}
-		
-	sets.WS['Savage Blade'].Mid = set_combine(sets.WS['Savage Blade'], {
-		head="Meghanada Visor +2"
-		})
-		
-	sets.WS['Savage Blade'].Acc = set_combine(sets.WS['Savage Blade'].Mid, {
-		--combatant's torque
-		})
-		
-	sets.WS['Requiescat'] = set_combine(sets.WS['Savage Blade'], {
-        head="Meghanada Visor +2",
-        neck="Fotia Gorget",
-        ring2="Epona's Ring",
-        waist="Soil Belt",
-        }) --MND
-
-    sets.WS['Requiescat'].Acc = set_combine(sets.WS['Requiescat'], {
-        neck="Combatant's Torque",
-        })
-		
-	-- Midcast sets
-	
-	sets.midcast = {}
-	
-	sets.midcast.Utsusemi = {}
-	
-	sets.midcast.RA = {
-		ammo="Chrono Bullet",
-		head="Meghanada Visor +2",
-		body="Mummu Jacket +2",
-		hands=Adhemar.Hands.PathC,
-		legs=Adhemar.Legs.PathC,
-		feet="Meg. Jam. +2",
-		neck="Iskur Gorget",
-		ear1="Enervating Earring",
-		ear2="Dignitary's Earring",
-		ring1="Dingir Ring",
-		ring2="Ilabrat Ring",
-		waist="Yemaya Belt",
-		back=Camulus.rSTP}
-		
-	sets.midcast.RA.Mid = set_combine(sets.midcast.RA,{
-		--ammo="Devestating Bullet",
-		feet="Meg. Jam. +2",
-		ring1="Hajduk Ring +1",
-		waist="K. Kachina Belt +1",
-		})
-		
-	sets.midcast.RA.Acc = set_combine(sets.midcast.RA.Mid,{
-		--ammo="Devestating Bullet",
-		body="Laksamana Frac +3",
-		hands="Meghanada Gloves +2",
-		legs="Laskamana Trews +3",
-		feet="Meg. Jam. +2",
-		waist="K. Kachina Belt +1",
-		ring1="Hajduk Ring +1",
-		ring2="Hajduk Ring +1",--Regal Ring
-		})
-		
-	sets.TripleShot = {
-		head="Oshosi Mask +1",
-		body="Chasseur's Frac +1",
-		hands="Lanun Gants +3",
-		legs="Oshosi Trousers +1",
-		feet="Oshosi Leggings +1",
-		}
-		
-	sets.idle = {
-		head="Meghanada Visor +2",
-		body="Lanun Frac +3",
-		hands="Volte Bracers",
-		legs="Mummu Kecks +2",
-		feet=herc.feet.DT,
-		neck="Loricate Torque +1",
-		ear1="Odnowa Earring", --2/0
-		ear2="Etiolation Earring",
-		ring1="Defending Ring",
-		ring2="Dark Ring",
-		--back="Moonbeam Cape",
-		back=Camulus.Snapshot,
-		waist="Flume Belt",
-		}
-	
-	sets.idle.ShellV = {
-		head="Meghanada Visor +2",
-		body="Lanun Frac +3",
-		hands="Volte Bracers",
-		legs="Mummu Kecks +2",
-		feet="Lanun Bottes +3",
-		neck="Loricate Torque +1",
-		ear1="Odnowa Earring", --2/0
-		ear2="Etiolation Earring",
-		ring1="Defending Ring",
-		ring2="Dark Ring",
-		--back="Moonbeam Cape",
-		back=Camulus.Snapshot,
-		waist="Flume Belt",
-		}
-
-	sets.engaged = {}
-		
-	sets.engaged.SW = {
-		--head="Dampening Tam",
-		head="Adhemar Bonnet +1",
-		body=Adhemar.Body.PathA,
-		hands=Adhemar.Hands.PathA,
-		legs="Samnuha Tights",
-		feet=herc.feet.TA,
-		neck="Iskur Gorget",
-		left_ear="Suppanomimi", -- brutal
-		right_ear="Dignitary's Earring", --5 cessance
-		ring1="Chirich Ring +1",
-		ring2="Epona's Ring",
-		back=Camulus.DA,
-		waist="Kentarch Belt +1",
-		}
-
-	sets.engaged.DW11 = { --this is the default TP set
-		--head="Dampening Tam",
-		head="Adhemar Bonnet +1",
-		body=Adhemar.Body.PathA,
-		hands=Adhemar.Hands.PathA,
-		legs="Samnuha Tights",
-		feet=herc.feet.TA,
-		neck="Iskur Gorget",
-		left_ear="Suppanomimi",
-		right_ear="Dignitary's Earring", --5 cessance
-		ring1="Chirich Ring +1",
-		ring2="Epona's Ring",
-		back=Camulus.DA,
-		waist="Kentarch Belt +1", -- quadbuffet
-		}
-		
-	sets.engaged.DW11.Mid = {
-		--head="Dampening Tam",
-		head="Adhemar Bonnet +1",
-		body=Adhemar.Body.PathA,
-		hands=Adhemar.Hands.PathA,
-		legs="Samnuha Tights",
-		feet=herc.feet.TA,
-		neck="Lissome Necklace",
-		left_ear="Suppanomimi",
-		right_ear="Dignitary's Earring", --5 telos
-		ring1="Chirich Ring +1",
-		ring2="Epona's Ring",
-		back=Camulus.DA,
-		waist="Kentarch Belt +1",
-		}
-		
-	sets.engaged.DW11.Acc = set_combine( sets.engaged.DW11.Mid, {
-		legs="Meghanada Chausses +2"
-		})
-		
-	sets.engaged.DW15 = {
-		--head="Dampening Tam",
-		head="Adhemar Bonnet +1",
-		body=Adhemar.Body.PathA,
-		hands=Adhemar.Hands.PathA,
-		legs="Samnuha Tights",
-		feet=herc.feet.TA,
-		neck="Iskur Gorget",
-		left_ear="Suppanomimi",
-		right_ear="Eabani Earring", 
-		ring1="Chirich Ring +1",
-		ring2="Epona's Ring",
-		back=Camulus.DA,
-		waist="Kentarch Belt +1", -- quadbuffet
-		}
-		
-		sets.cursna = {}
-		sets.CureReceived = {}
-	
-	sets.engaged.DW15.Mid = set_combine( sets.engaged.DW15, {
-		neck="Lissome Necklace",
-		legs="Meghanada Chausses +2",
-		})
-		
-	sets.engaged.DW15.Acc = set_combine( sets.engaged.DW15.Mid, {
-		
-		})
-		
-	sets.engaged.Hybrid = {
-		head=Adhemar.Head.PathD,
-		neck="Loricate Torque +1",
-		feet=herc.feet.DT
-		}
-		
-	sets.Obi = {waist="Hachirin-no-obi"}
-		
-	send_command('lua load gearinfo')
-	build_UI()
-end
-
-function file_unload() -- unbind hotkeys
-	send_command('lua u gearinfo')
-	send_command('unbind f9')
-	send_command('unbind ^f9')
-	send_command('unbind !f9')
-	send_command('unbind @f9')
-	
-	send_command('unbind f10')
-	send_command('unbind ^f10')
-	
-	send_command('unbind f11')
-	send_command('unbind ^f11')
-	send_command('unbind !f11')
-	
-	send_command('unbind f12')
-	send_command('unbind ^f12')
-	send_command('unbind !f12')
-	
-	send_command('unbind ^-')
-	send_command('unbind ^=')
-	
-	send_command('unbind numpad0')
-	send_command('unbind numpad.')
-	send_command('unbind ^numpad.')
 end
 
 function build_UI()
+	local GUI_x = 1732
+	local GUI_y = 80
 	DT = IconButton{
-		x = 1732,
-		y = 80,
+		x = GUI_x + 0,
+		y = GUI_y + 0,
 		var = DDMode,
 		icons = {
 			{img = 'DD Normal.png', value = 'Normal'},
@@ -698,91 +143,120 @@ function build_UI()
 	DT:draw()
 
 	weap = IconButton{
-		x = 1732,
-		y = 134,
+		x = GUI_x + 0,
+		y = GUI_y + 54,
 		var = meleeWeapons,
 		icons = {
-			{img = 'Rostam-Naegling.png', value = 'Rostam-Naegling'},
-			{img = 'Rostam-Blurred.png', value = 'Rostam-Blurred'},
-			{img = 'Rostam-Nusku.png', value = 'Rostam-Shield'},
-			{img = 'Kaja-Blurred.png', value = 'Naegling-Blurred'},
-			{img = 'Fettering-Nusku.png', value = 'Fettering-Shield'},
-			{img = 'Rostam-Fettering.png', value = 'Rostam-Fettering'}
+			{img = 'COR/Rostam-Naegling.png', value = 'Rostam-Naegling'},
+			{img = 'COR/Rostam-Blurred.png', value = 'Rostam-Blurred'},
+			{img = 'COR/Rostam-Nusku.png', value = 'Rostam-Shield'},
+			{img = 'COR/Kaja-Blurred.png', value = 'Naegling-Blurred'},
+			{img = 'COR/Fettering-Nusku.png', value = 'Fettering-Shield'},
+			{img = 'COR/Rostam-Fettering.png', value = 'Rostam-Fettering'}
 		},
 		command = 'gs c update'
 	}
 	weap:draw() -- initialize the weapon button
 	
 	range= IconButton{
-		x = 1732,
-		y = 188,
+		x = GUI_x + 0,
+		y = GUI_y + 54 * 2,
 		var = rangedWeapon,
 		icons = {
-			{img = 'Death Penalty.png', value = 'Death Penalty'},
-			{img = 'Armageddon.png', value = 'Armageddon'},
-			{img = 'Fomalhaut.png', value = 'Fomalhaut'},
-			{img = 'Anarchy +2.png', value = 'Anarchy +2'}
+			{img = 'COR/Death Penalty.png', value = 'Death Penalty'},
+			{img = 'COR/Armageddon.png', value = 'Armageddon'},
+			{img = 'COR/Fomalhaut.png', value = 'Fomalhaut'},
+			{img = 'COR/Anarchy +2.png', value = 'Anarchy +2'}
 		},
 		command = 'gs c update'
 	}
 	range:draw()
 	
 	QD1 = IconButton{
-		x = 1732,
-		y = 242,
+		x = GUI_x + 0,
+		y = GUI_y + 54 * 3,
 		var = quickdrawElement1,
 		icons = {
-			{img = 'Fire Shot.png', value = 'Fire'},
-			{img = 'Earth Shot.png', value = 'Earth'},
-			{img = 'Water Shot.png', value = 'Water'},
-			{img = 'Wind Shot.png', value = 'Wind'},
-			{img = 'Ice Shot.png', value = 'Ice'},
-			{img = 'Thunder Shot.png', value = 'Thunder'},
-			{img = 'Light Shot.png', value = 'Light'},
-			{img = 'Dark Shot.png', value = 'Dark'}
+			{img = 'COR/Fire Shot.png', value = 'Fire'},
+			{img = 'COR/Earth Shot.png', value = 'Earth'},
+			{img = 'COR/Water Shot.png', value = 'Water'},
+			{img = 'COR/Wind Shot.png', value = 'Wind'},
+			{img = 'COR/Ice Shot.png', value = 'Ice'},
+			{img = 'COR/Thunder Shot.png', value = 'Thunder'},
+			{img = 'COR/Light Shot.png', value = 'Light'},
+			{img = 'COR/Dark Shot.png', value = 'Dark'}
 		},
 		command = 'gs c update'
 	}
 	QD1:draw()
 	QD2 = IconButton{
-		x = 1732,
-		y = 296,
+		x = GUI_x + 0,
+		y = GUI_y + 54 * 4,
 		var = quickdrawElement2,
 		icons = {
-			{img = 'Fire Shot.png', value = 'Fire'},
-			{img = 'Earth Shot.png', value = 'Earth'},
-			{img = 'Water Shot.png', value = 'Water'},
-			{img = 'Wind Shot.png', value = 'Wind'},
-			{img = 'Ice Shot.png', value = 'Ice'},
-			{img = 'Thunder Shot.png', value = 'Thunder'},
-			{img = 'Light Shot.png', value = 'Light'},
-			{img = 'Dark Shot.png', value = 'Dark'}
+			{img = 'COR/Fire Shot.png', value = 'Fire'},
+			{img = 'COR/Earth Shot.png', value = 'Earth'},
+			{img = 'COR/Water Shot.png', value = 'Water'},
+			{img = 'COR/Wind Shot.png', value = 'Wind'},
+			{img = 'COR/Ice Shot.png', value = 'Ice'},
+			{img = 'COR/Thunder Shot.png', value = 'Thunder'},
+			{img = 'COR/Light Shot.png', value = 'Light'},
+			{img = 'COR/Dark Shot.png', value = 'Dark'}
 		},
 		command = 'gs c update'
 	}
 	QD2:draw()
 	
 	RHToggle = ToggleButton{
-		x = 1732,
-		y = 404,
+		x = GUI_x + 54,
+		y = GUI_y + 54 * 6,
 		var = 'enabled',
-		iconUp = 'RH Off.png',
-		iconDown = 'RH On.png',
+		iconUp = 'COR/RH Off.png',
+		iconDown = 'COR/RH On.png',
 	}
 	RHToggle:draw()
 	
+	WS_Shortcuts = M{'Leaden Salute', 'Hot Shot', 'Wildfire', 'Last Stand'}
+	RHShortcuts = IconButton{
+		x = GUI_x + 0,
+		y = GUI_y + 54 * 6,
+		var = WS_Shortcuts,
+		icons = {
+			{img = 'COR/Leaden Salute.png', value = 'Leaden Salute'},
+			{img = 'COR/Hot Shot.png', value = 'Hot Shot'},
+			{img = 'COR/Wildfire.png', value = 'Wildfire'},
+			{img = 'COR/Last Stand.png', value = 'Last Stand'}
+		},
+		command = function() windower.send_command('gs rh set %s':format(WS_Shortcuts.value)) end
+	}
+	RHShortcuts:draw()
+	
 	AMToggle = ToggleButton{
-		x = 1732,
-		y = 458,
+		x = GUI_x + 54,
+		y = GUI_y + 54 * 7,
 		var = 'useAM',
-		iconUp = 'Aftermath Off.png',
-		iconDown = 'Aftermath On.png',
+		iconUp = 'COR/Aftermath Off.png',
+		iconDown = 'COR/Aftermath On.png',
 	}
 	AMToggle:draw()
 	
+	TP_Shortcuts = M{'1000','1500','2000'}
+	RHTP = IconButton{
+		x = GUI_x + 0,
+		y = GUI_y + 54 * 7,
+		var = TP_Shortcuts,
+		icons = {
+			{img = 'COR/1000TP.png', value = '1000'},
+			{img = 'COR/1500TP.png', value = '1500'},
+			{img = 'COR/2000TP.png', value = '2000'}
+		},
+		command = function() windower.send_command('gs rh tp %s':format(TP_Shortcuts.value)) end
+	}
+	RHTP:draw()
+	
 	RHWS = PassiveText({
-		x = 1896,
-		y = 512,
+		x = GUI_x + 164,
+		y = GUI_y + 54 * 8,
 		text = 'RH Weaponskill: %s',
 		--var = 'weaponskill',
 		align = 'right'},
@@ -790,8 +264,8 @@ function build_UI()
 	RHWS:draw()
 	
 	Acc_display = TextCycle{
-		x = 1896,
-		y = 532,
+		x = GUI_x + 164,
+		y = GUI_y + 54 * 8 + 20,
 		var = meleeAccuracy,
 		align = 'right',
 		width = 112,
@@ -800,8 +274,8 @@ function build_UI()
 	Acc_display:draw()
 	
 	RAcc_display = TextCycle{
-		x = 1896,
-		y = 564,
+		x = GUI_x + 164,
+		y = GUI_y + 54 * 8 + 20 + 32 * 1,
 		var = rangedAccuracy,
 		align = 'right',
 		width = 112,
@@ -810,8 +284,8 @@ function build_UI()
 	RAcc_display:draw()
 	
 	MAcc_display = TextCycle{
-		x = 1896,
-		y = 596,
+		x = GUI_x + 164,
+		y = GUI_y + 54 * 8 + 20 + 32 * 2,
 		var = magicAccuracy,
 		align = 'right',
 		width = 112,
@@ -820,8 +294,8 @@ function build_UI()
 	MAcc_display:draw()
 	
 	HAcc_display = TextCycle{
-		x = 1896,
-		y = 628,
+		x = GUI_x + 164,
+		y = GUI_y + 54 * 8 + 20 + 32 * 3,
 		var = hotshotAccuracy,
 		align = 'right',
 		width = 112,
@@ -839,7 +313,7 @@ function self_command(commandArgs)
 		end
 	end
 	
-	gearinfo(commandArgs)
+	--gearinfo(commandArgs)
 	
 	-- Of the original command message passed in, remove the first word from
 	-- the list (it will be used to determine which function to call), and
@@ -912,7 +386,7 @@ end
 
 function get_engaged_set()	
 	local acc = meleeAccuracy.value
-	local haste = get_haste_set()
+	local haste = 'DW'..DWLevel.value --get_haste_set()
 	
 	if sets.engaged[haste][acc] then
 		s = sets.engaged[haste][acc]
@@ -1032,6 +506,25 @@ function buff_change(buff,gain)
 	if buff == 'Flurry' and not gain then
 		flurry = 0
 	end
+	if buff == 'Haste' and not gain then
+		Haste_Level = 0
+	end
+	local dw_level = get_dw_level()
+	if dw_level ~= DWLevel.value then
+		DWLevel:set(tostring(dw_level))
+		update_gear()
+	end
+end
+
+function get_dw_level()
+	local dw_needed = get_dw_needed()
+	local dw_level = math.max(unpack(DWLevel))
+	for i, dw in ipairs(DWLevel) do -- find the lowest dw that is >= dw_needed
+		if tonumber(dw) < dw_level and tonumber(dw) >= dw_needed then
+			dw_level = tonumber(dw)
+		end
+	end
+	return dw_level
 end
 
 function precast(spell,action)
@@ -1215,6 +708,14 @@ windower.raw_register_event('outgoing chunk', function(id, data)
 		PlayerH = action_message["Rotation"]
 	end
 end)
+
+windower.raw_register_event('prerender', 
+	function()
+		local t = ft_target()
+		if t and bit.band(t.id,0xFF000000) ~= 0 then -- highest byte of target.id indicates whether it's a player or not
+			facetarget()
+		end
+	end)
 
 windower.raw_register_event('action',
     function(act)
