@@ -19,6 +19,7 @@ local midshot = false
 local timeout = 0
 useAM = false
 ws_tp = 1000
+stop_on_tp = false
 
 local action_events = {
     [2] = 'mid /ra',
@@ -260,7 +261,7 @@ function process_queue()
                 ['target'] = target,
                 ['action_type'] = 'Ability',
 			}
-        else
+        elseif not stop_on_tp or p.vitals.tp < ws_tp then
             pending = {
                 ['prefix'] = '/range',
                 ['english'] = 'Ranged',
@@ -467,6 +468,14 @@ register_unhandled_command(function (...)
 						windower.add_to_chat(200, "Rnghelper : Use Aftermath Disabled")
 						useAM = false
 					end
+				end
+			elseif cmd == 'stopontp' then
+				if T{'true', 'on', 'enable', 'yes'}:contains(args[1]:lower()) then
+					windower.add_to_chat(200, "Rnghelper : Stop on TP enabled")
+					stop_on_tp = true
+				elseif T{'false', 'off', 'disable', 'no'}:contains(args[1]:lower()) then
+					windower.add_to_chat(200, "Rnghelper : Stop on TP disabled")
+					stop_on_tp = false
 				end
 			end
 		end
