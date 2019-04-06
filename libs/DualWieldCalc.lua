@@ -42,7 +42,6 @@ function get_MA_haste() -- result undefined if gearswap's vars are not loaded.
 	end
 	for i = 1, buffactive['march'] or 0, 1 do
 		ma_haste = ma_haste + MarchInfo[Marches[i]]
-		print(Marches[i])
 	end
 	--[[if buffactive['march'] then -- First march is honor march
 		ma_haste = ma_haste + 174
