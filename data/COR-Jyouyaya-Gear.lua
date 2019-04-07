@@ -39,6 +39,7 @@ function build_gearsets()
 	Camulus = {}
 	Camulus.DA = { name="Camulus's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','DEX+10','"Dbl.Atk."+10','Magic dmg. taken-10%',}}
 	Camulus.rSTP = { name="Camulus's Mantle", augments={'AGI+20','Rng.Acc.+20 Rng.Atk.+20','"Store TP"+10','Damage taken-5%',}}
+	Camulus.AM3 = { name="Camulus's Mantle", augments={'AGI+20','Rng.Acc.+20 Rng.Atk.+20','AGI+10','Crit.hit rate+10','Phys. dmg. taken-10%',}}
 	
 	Camulus.Savage = { name="Camulus's Mantle", augments={'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%','Damage taken-5%',}}
 	Camulus.LastStand = { name="Camulus's Mantle", augments={'AGI+20','Rng.Acc.+20 Rng.Atk.+20','AGI+10','Weapon skill damage +10%','Damage taken-5%',}}
@@ -340,11 +341,13 @@ function build_gearsets()
 		}
 		
 	sets.WS['Hot Shot'].Mid = set_combine(sets.WS['Hot Shot'], {
-		--ammo="Devestating Bullet"
+		--ammo="Devastating Bullet"
+		body="Laksamana Frac +3",
 		ring2="Hajduk Ring +1",
 		})
 	
 	sets.WS['Hot Shot'].Acc = set_combine(sets.WS['Hot Shot'].Mid, {
+		ammo="Devastating Bullet",
 		ring1="Hajduk Ring +1",
 		waist="K. Kachina Belt +1",
 		})
@@ -418,14 +421,14 @@ function build_gearsets()
 		back=Camulus.rSTP}
 		
 	sets.midcast.RA.Mid = set_combine(sets.midcast.RA,{
-		--ammo="Devestating Bullet",
+		ammo="Devastating Bullet",
 		feet="Meg. Jam. +2",
 		ring1="Hajduk Ring +1",
 		waist="K. Kachina Belt +1",
 		})
 		
 	sets.midcast.RA.Acc = set_combine(sets.midcast.RA.Mid,{
-		--ammo="Devestating Bullet",
+		ammo="Devastating Bullet",
 		body="Laksamana Frac +3",
 		hands="Meghanada Gloves +2",
 		legs="Laskamana Trews +3",
@@ -434,6 +437,26 @@ function build_gearsets()
 		ring1="Hajduk Ring +1",
 		ring2="Hajduk Ring +1",--Regal Ring
 		})
+		
+	sets.midcast.RA.Armageddon = set_combine(sets.midcast.RA, {})
+	sets.midcast.RA.Armageddon.Mid = set_combine(sets.midcast.RA.Mid, {})
+	sets.midcast.RA.Armageddon.Acc = set_combine(sets.midcast.RA.Acc, {})
+	
+	sets.midcast.RA.Armageddon.AM3 = {
+		ammo="Chrono Bullet",
+		head="Meghanada Visor +2",
+		body="Meghanada Cuirie +2",
+		hands="Mummu Wrists +2",
+		legs="Darraigner's Brais",
+		feet="Oshosi Leggings +1",
+		neck="Iskur Gorget",
+		waist="K. Kachina Belt +1",
+		ear1="Enervating Earring",
+		ear2="Dignitary's Earring",
+		ring1="Mummu Ring",
+		ring2="Begrudging Ring",
+		back=Camulus.AM3	
+	}
 		
 	sets.TripleShot = {
 		head="Oshosi Mask +1",

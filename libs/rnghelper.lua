@@ -254,7 +254,7 @@ function process_queue()
                 ['target'] = target,
                 ['action_type'] = 'Ability',
             }
-		elseif useAM and w and p.vitals.tp >= w.tp then
+		elseif useAM and w and p.vitals.tp >= w.tp and not isBuffActive(w.buff) then
 			pending = {
 				['prefix'] = '/weaponskill',
                 ['english'] = w.ws,
