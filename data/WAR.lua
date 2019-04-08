@@ -8,7 +8,7 @@ function setup()
 	AbysseaMode = M(false, 'Abyssea Mode')
 	OffhandMode = M{['description']='Offhand Mode', 'Auto', 'Manual'}
 	
-	WeaponMode = M{['description']='Weapon', 'Chango', 'Montante +1', 'Shining One', 'Kaja Staff', 'Kaja Axe', 'Kaja Sword'}
+	WeaponMode = M{['description']='Weapon', 'Chango', 'Montante +1', 'Raetic Algol +1', 'Shining One', 'Kaja Staff', 'Kaja Axe', 'Kaja Sword'}
 	Offhand = M{['description']='Offhand', 'Reikiko', 'Barbarity +1', 'Digirbalag', 'Blurred Shield +1'}
 	AbysseaWeapon = M{['description']='Weapon', 'Dagger', 'Sword', 'Greatsword', 'Scythe', 'Spear', 'Club', 'Staff'}
 	
@@ -25,6 +25,7 @@ function setup()
 	WeaponTable = {
 		['Chango'] = {main="Chango", type='2H', img='WAR/Chango.png'},
 		['Montante +1'] = {main="Montante +1", type='2H', img='WAR/Montante.png'},
+		['Raetic Algol +1'] = {main="Raetic Algol +1", type='2H', img='WAR/Raetic Algol.png.'},
 		['Shining One'] = {main="Shining One", type='2H', img='WAR/Bismarck.png'},
 		['Kaja Staff'] = {main="Kaja Staff", type='2H', img='WAR/Kaja Staff.png'},
 		['Kaja Axe'] = {main="Kaja Axe", type='1H', DW=true, img='WAR/Kaja Axe.png', offhand= T{default='digirbalag',

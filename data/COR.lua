@@ -107,6 +107,7 @@ function setup()
 	QDMode = 'Damage'
 	DDMode = M{['description']='DD Mode', 'Normal', 'Hybrid', 'Emergancy DT'}
 	emergancyDT = M(false,'Emegancy DT')
+	roll_weapons = true
 	
 	DWLevel = M{['description']='Dual Wield Level', '11', '15'}
 	
@@ -207,6 +208,15 @@ function build_UI()
 	}
 	QD2:draw()
 	
+	RG = ToggleButton{
+		x = GUI_x + 54,
+		y = GUI_y + 54 * 4,
+		var = 'roll_weapons',
+		iconUp = 'COR/RollGearOff.png',
+		iconDown = 'COR/RollGearOn.png',
+	}
+	RG:draw()
+	
 	RHToggle = ToggleButton{
 		x = GUI_x + 54,
 		y = GUI_y + 54 * 6,
@@ -216,7 +226,16 @@ function build_UI()
 	}
 	RHToggle:draw()
 	
-	WS_Shortcuts = M{'Leaden Salute', 'Hot Shot', 'Wildfire', 'Last Stand'}
+	SOTPToggle = ToggleButton{
+		x = GUI_x + 54 * 2,
+		y = GUI_y + 54 * 6,
+		var = 'stop_on_tp',
+		iconUp = 'COR/Stop on tp Off.png',
+		iconDown = 'COR/Stop on tp On.png'
+	}
+	SOTPToggle:draw()
+	
+	WS_Shortcuts = M{'Leaden Salute', 'Hot Shot', 'Wildfire', 'Last Stand', ''}
 	RHShortcuts = IconButton{
 		x = GUI_x + 0,
 		y = GUI_y + 54 * 6,
@@ -225,7 +244,8 @@ function build_UI()
 			{img = 'COR/Leaden Salute.png', value = 'Leaden Salute'},
 			{img = 'COR/Hot Shot.png', value = 'Hot Shot'},
 			{img = 'COR/Wildfire.png', value = 'Wildfire'},
-			{img = 'COR/Last Stand.png', value = 'Last Stand'}
+			{img = 'COR/Last Stand.png', value = 'Last Stand'},
+			{img = 'COR/NO.png', value = ''}
 		},
 		command = function() windower.send_command('gs rh set %s':format(WS_Shortcuts.value)) end
 	}
@@ -240,7 +260,7 @@ function build_UI()
 	}
 	AMToggle:draw()
 	
-	TP_Shortcuts = M{'1000','1500','2000'}
+	--[[TP_Shortcuts = M{'1000','1500','2000'}
 	RHTP = IconButton{
 		x = GUI_x + 0,
 		y = GUI_y + 54 * 7,
@@ -251,6 +271,18 @@ function build_UI()
 			{img = 'COR/2000TP.png', value = '2000'}
 		},
 		command = function() windower.send_command('gs rh tp %s':format(TP_Shortcuts.value)) end
+	}
+	RHTP:draw()]]
+	
+	RHTP = SliderButton{
+		x = GUI_x + 0,
+		y = GUI_y + 54 * 7,
+		var = "ws_tp",
+		min = 1000,
+		max = 3000,
+		increment = 100,
+		height = 122,
+		icon="COR/TP.png",
 	}
 	RHTP:draw()
 	
@@ -599,8 +631,11 @@ function precast(spell,action)
 	elseif spell.name:contains('Step') then
 		equip(sets.precast.Step)
 	elseif spell.type == 'CorsairRoll' and spell.name:contains('Roll') then
-
-			equip(sets.JA['Phantom Roll'])	
+		s = sets.JA['Phantom Roll']
+		if roll_weapons then
+			s = set_combine(s, {main='', sub='', range=''})
+		end
+		equip(s)
 	elseif spell.type == 'CorsairShot' then
 		if QDMode == 'Damage' then
 			if spell.name:contains('Light') or spell.name:contains('Dark') then
