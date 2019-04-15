@@ -126,7 +126,6 @@ function build_gearsets()
 		})
 	
 	sets.precast.RA = {
-		ammo="Chrono Bullet",
 		head="Taeon Chapeau",
 		neck="Commodore Charm +2",
 		body="Laksamana's Frac +3",
@@ -137,7 +136,6 @@ function build_gearsets()
 		waist="Impulse Belt",}
 		
 	sets.precast.RA.Flurry1 = {
-		ammo="Chrono Bullet",
 		head="Taeon Chapeau",
 		neck="Commodore Charm +2",
 		body="Laksamana's Frac +3",
@@ -148,7 +146,6 @@ function build_gearsets()
 		waist="Yameya Belt",}
 		
 	sets.precast.RA.Flurry2 = {
-		ammo="Chrono Bullet",
 		head="Chass. Tricorne +1",
 		neck="Commodore Charm +2",
 		body="Laksamana's Frac +3",
@@ -435,7 +432,7 @@ function build_gearsets()
 		feet="Meg. Jam. +2",
 		waist="K. Kachina Belt +1",
 		ring1="Hajduk Ring +1",
-		ring2="Hajduk Ring +1",--Regal Ring
+		--ring2="Hajduk Ring +1",--Regal Ring
 		})
 		
 	sets.midcast.RA.Armageddon = set_combine(sets.midcast.RA, {})
