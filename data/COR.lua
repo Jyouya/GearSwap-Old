@@ -108,6 +108,7 @@ function setup()
 	DDMode = M{['description']='DD Mode', 'Normal', 'Hybrid', 'Emergancy DT'}
 	emergancyDT = M(false,'Emegancy DT')
 	roll_weapons = true
+	bullets = {['Normal']='Chrono Bullet', ['Mid']='Devastating Bullet', ['Acc']='Devastating Bullet'}
 	
 	DWLevel = M{['description']='Dual Wield Level', '11', '15'}
 	
@@ -281,7 +282,7 @@ function build_UI()
 		min = 1000,
 		max = 3000,
 		increment = 100,
-		height = 122,
+		height = 144,--122,
 		icon="COR/TP.png",
 	}
 	RHTP:draw()
@@ -334,6 +335,14 @@ function build_UI()
 		command = 'gs c update'
 	}
 	HAcc_display:draw()
+	
+	--[[Testbutton = FunctionButton{
+		x = 100,
+		y = 100,
+		icon = 'COR/Haste.png',
+		command = function() print('push') end
+	}
+	Testbutton:draw()]]
 end
 
 function self_command(commandArgs)
@@ -446,9 +455,9 @@ end
 
 function get_WS_type(ws)
 	local t = weaponskills[ws]
-	if t == 'Ranged Accuracy' then
+	if t == 'rangedAccuracy' then
 		return 'Ranged'
-	elseif t == 'Magic Accuracy' then
+	elseif t == 'magicAccuracy' then
 		return 'Magic'
 	else
 		return 'Physical'
@@ -632,7 +641,7 @@ function precast(spell,action)
 		equip(sets.precast.Step)
 	elseif spell.type == 'CorsairRoll' and spell.name:contains('Roll') then
 		s = sets.JA['Phantom Roll']
-		if roll_weapons then
+		if not roll_weapons then
 			s = set_combine(s, {main='', sub='', range=''})
 		end
 		equip(s)
@@ -681,7 +690,9 @@ function midcast(spell,action)
 	elseif spell.action_type == 'Ranged Attack' then
 		local acc = rangedAccuracy.value
 		local gun = rangedWeapon.value
-		local equipSet = sets.midcast.RA
+		local equipSet = set_combine(sets.midcast.RA, {
+			ammo=bullets[acc]
+		})
 		
 		if equipSet[gun] then
 			equipSet = equipSet[gun]
