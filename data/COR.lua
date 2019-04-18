@@ -259,6 +259,14 @@ function build_UI()
 	}
 	AMToggle:draw()
 	
+	RHClear = FunctionButton{
+		x = GUI_x + 54 * 2,
+		y = GUI_y + 54 * 7,
+		icon = 'COR/RH Clear.png',
+		command = function() windower.send_command('gs rh clear') end
+	}
+	RHClear:draw()
+	
 	--[[TP_Shortcuts = M{'1000','1500','2000'}
 	RHTP = IconButton{
 		x = GUI_x + 0,
