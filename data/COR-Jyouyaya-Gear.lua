@@ -565,8 +565,8 @@ function build_gearsets()
 		waist="Kentarch Belt +1", -- quadbuffet
 		}
 		
-		sets.cursna = {}
-		sets.CureReceived = {}
+	sets.cursna = {}
+	sets.CureReceived = {}
 	
 	sets.engaged.DW15.Mid = set_combine( sets.engaged.DW15, {
 		neck="Lissome Necklace",
@@ -584,4 +584,6 @@ function build_gearsets()
 		}
 		
 	sets.Obi = {waist="Hachirin-no-obi"}
+	
+	sets.item = {}
 end

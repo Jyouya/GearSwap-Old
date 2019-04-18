@@ -644,6 +644,10 @@ function precast(spell,action)
 		end
 	elseif spell.name:contains('Soultrapper') then
 		equip({ammo="Blank Soulplate"})
+	elseif spell.type == 'Item' then
+		if sets.item[spell.name] then
+			equip(sets.item[spell.name])
+		end
 	end
 end
 
