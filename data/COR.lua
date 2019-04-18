@@ -13,7 +13,6 @@ function get_sets()
 	require('COR-%s-Gear':format(player.name))
 	build_gearsets()
 		
-	--send_command('lua load gearinfo')
 	build_UI()
 end
 
@@ -44,7 +43,6 @@ function bind_keys()
 end
 
 function file_unload() -- unbind hotkeys
-	send_command('lua u gearinfo')
 	send_command('unbind f9')
 	send_command('unbind ^f9')
 	send_command('unbind !f9')
@@ -354,8 +352,6 @@ function self_command(commandArgs)
 		end
 	end
 	
-	--gearinfo(commandArgs)
-	
 	-- Of the original command message passed in, remove the first word from
 	-- the list (it will be used to determine which function to call), and
 	-- send the remaining words as parameters for the function.
@@ -476,38 +472,6 @@ function handle_qd(cmdParams)
 	local element = _G['quickdrawElement%i':format(cmdParams[1])].value
 	QDMode = _G['quickdrawMode%i':format(cmdParams[1])].value	-- set global QD mode for the precast function
 	send_command('input /ja "'..element..' shot" <t>')
-end
-
-function gearinfo(cmdParams)
-    if cmdParams[1] == 'gearinfo' then
-        if type(tonumber(cmdParams[2])) == 'number' then
-            if tonumber(cmdParams[2]) ~= DW_Needed then
-				DW_Needed = tonumber(cmdParams[2])
-				DW = true
-            end
-        elseif type(cmdParams[2]) == 'string' then
-            if cmdParams[2] == 'false' then
-        	    DW_Needed = 0
-                DW = false
-      	    end
-        end
-        if type(cmdParams[4]) == 'string' then
-            if cmdParams[4] == 'true' then
-                moving = true
-            elseif cmdParams[4] == 'false' then
-                moving = false
-            end
-        end
-		if not moving then
-			local t = ft_target()
-			if t and bit.band(t.id,0xFF000000) ~= 0 then -- highest byte of target.id indicates whether it's a player or not
-				facetarget()
-			end
-		end
-        if not midaction() and player.status == 'Engaged' then
-            update_gear()
-        end
-    end
 end
 
 function handle_face(target)
