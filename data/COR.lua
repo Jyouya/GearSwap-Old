@@ -574,7 +574,7 @@ function precast(spell,action)
 	-- rng helper integration --
 	eventArgs = {} 
 	filter_precast(spell, {}, eventArgs)
-	if eventArgs.cancel then return end
+	if eventArgs.cancel then return end -- might need to cancel_spell here
 	-- end rng helper integration --
 	
 	if spell.action_type == 'Magic' then

@@ -85,7 +85,7 @@ function build_gearsets()
 	sets.JA.Quickdraw = {}
 	sets.JA.Quickdraw.Damage = {}
 	sets.JA.Quickdraw.Accuracy = {
-		ammo="Living Bullet",
+		ammo="Devastating Bullet",
 		head="Oshosi Mask +1",
 		neck="Commodore Charm +2",
 		ear1="Gwati Earring",
@@ -102,7 +102,7 @@ function build_gearsets()
 		ammo="Living Bullet",
 		neck="Iskur Gorget",
 		ear1="Enervating Earring",
-		ear2="Dignitary's Earring",
+		ear2="Telos Earring",
 		body="Mummu Jacket +2",
 		hands=Adhemar.Hands.PathC,
 		ring1="Chirich Ring +1",
@@ -339,7 +339,7 @@ function build_gearsets()
 		
 	sets.WS['Hot Shot'].Mid = set_combine(sets.WS['Hot Shot'], {
 		--ammo="Devastating Bullet"
-		body="Laksamana Frac +3",
+		body="Laksamana's Frac +3",
 		ring2="Hajduk Ring +1",
 		})
 	
@@ -411,7 +411,7 @@ function build_gearsets()
 		feet="Meg. Jam. +2",
 		neck="Iskur Gorget",
 		ear1="Enervating Earring",
-		ear2="Dignitary's Earring",
+		ear2="Telos Earring",
 		ring1="Dingir Ring",
 		ring2="Ilabrat Ring",
 		waist="Yemaya Belt",
@@ -426,9 +426,9 @@ function build_gearsets()
 		
 	sets.midcast.RA.Acc = set_combine(sets.midcast.RA.Mid,{
 		ammo="Devastating Bullet",
-		body="Laksamana Frac +3",
-		hands="Meghanada Gloves +2",
-		legs="Laskamana Trews +3",
+		body="Laksamana's Frac +3",
+		--hands="Meghanada Gloves +2",
+		legs="Laksamana's Trews +3",
 		feet="Meg. Jam. +2",
 		waist="K. Kachina Belt +1",
 		ring1="Hajduk Ring +1",
@@ -449,7 +449,7 @@ function build_gearsets()
 		neck="Iskur Gorget",
 		waist="K. Kachina Belt +1",
 		ear1="Enervating Earring",
-		ear2="Dignitary's Earring",
+		ear2="Telos Earring",
 		ring1="Mummu Ring",
 		ring2="Begrudging Ring",
 		back=Camulus.AM3	
@@ -506,7 +506,7 @@ function build_gearsets()
 		feet=herc.feet.TA,
 		neck="Iskur Gorget",
 		left_ear="Suppanomimi", -- brutal
-		right_ear="Dignitary's Earring", --5 cessance
+		right_ear="Telos Earring", --5 cessance
 		ring1="Chirich Ring +1",
 		ring2="Epona's Ring",
 		back=Camulus.DA,
@@ -522,7 +522,7 @@ function build_gearsets()
 		feet=herc.feet.TA,
 		neck="Iskur Gorget",
 		left_ear="Suppanomimi",
-		right_ear="Dignitary's Earring", --5 cessance
+		right_ear="Telos Earring", --5 cessance
 		ring1="Chirich Ring +1",
 		ring2="Epona's Ring",
 		back=Camulus.DA,
@@ -538,7 +538,7 @@ function build_gearsets()
 		feet=herc.feet.TA,
 		neck="Lissome Necklace",
 		left_ear="Suppanomimi",
-		right_ear="Dignitary's Earring", --5 telos
+		right_ear="Telos Earring", --5 telos
 		ring1="Chirich Ring +1",
 		ring2="Epona's Ring",
 		back=Camulus.DA,
