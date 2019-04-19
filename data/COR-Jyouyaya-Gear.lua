@@ -585,5 +585,11 @@ function build_gearsets()
 		
 	sets.Obi = {waist="Hachirin-no-obi"}
 	
+	sets.TreasureHunter = {
+		hands="Volte Bracers",
+		ring1="Gorney Ring",
+		waist="Chaac Belt"
+		}
+	
 	sets.item = {}
 end

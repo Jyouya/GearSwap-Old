@@ -5,6 +5,7 @@ require('DualWieldCalc')
 res = require('resources')
 packets = require('packets')
 require('cor.include')
+require('TreasureHunter.lua')
 
 
 function get_sets()
@@ -108,8 +109,9 @@ function setup()
 	roll_weapons = true
 	bullets = {['Normal']='Chrono Bullet', ['Mid']='Devastating Bullet', ['Acc']='Devastating Bullet'}
 	
+	DWMode = M{['description']='Dual Wield Mode', 'Auto', 'Manual'}
 	DWLevel = M{['description']='Dual Wield Level', '11', '15'}
-	
+		
 	local dw_level = get_dw_level()
 	DWLevel:set(tostring(dw_level))
 	
@@ -121,6 +123,8 @@ function setup()
 		[74] = 'DW15',}	
 	flurry = 1
 	
+	TreasureMode = TH.TreasureMode
+	
 	autofacetarget = true
 	rm_target = nil
 	moving = true
@@ -128,7 +132,8 @@ end
 
 function build_UI()
 	local GUI_x = 1732
-	local GUI_y = 80
+	local GUI_y = 70
+	GUI.bound.y.lower = 70
 	DT = IconButton{
 		x = GUI_x + 0,
 		y = GUI_y + 0,
@@ -216,9 +221,27 @@ function build_UI()
 	}
 	RG:draw()
 	
+	THButton = ToggleButton{
+		x = GUI_x + 54 * 2,
+		y = GUI_y + 54 * 4,
+		var = TH.TreasureMode,
+		iconUp = 'TH Off.png',
+		iconDown = 'TH On.png'
+	}
+	THButton:draw()
+	
+	DIV = Divider{
+		x = GUI_x,
+		y = GUI_y + 54 * 5,
+		size = 150
+	}
+	DIV:draw()
+	
+	RHGUI_y = GUI_y + 54 * 5 + 15
+	
 	RHToggle = ToggleButton{
 		x = GUI_x + 54,
-		y = GUI_y + 54 * 6,
+		y = RHGUI_y,
 		var = 'enabled',
 		iconUp = 'COR/RH Off.png',
 		iconDown = 'COR/RH On.png',
@@ -227,7 +250,7 @@ function build_UI()
 	
 	SOTPToggle = ToggleButton{
 		x = GUI_x + 54 * 2,
-		y = GUI_y + 54 * 6,
+		y = RHGUI_y,
 		var = 'stop_on_tp',
 		iconUp = 'COR/Stop on tp Off.png',
 		iconDown = 'COR/Stop on tp On.png'
@@ -237,7 +260,7 @@ function build_UI()
 	WS_Shortcuts = M{'Leaden Salute', 'Hot Shot', 'Wildfire', 'Last Stand', ''}
 	RHShortcuts = IconButton{
 		x = GUI_x + 0,
-		y = GUI_y + 54 * 6,
+		y = RHGUI_y,
 		var = WS_Shortcuts,
 		icons = {
 			{img = 'COR/Leaden Salute.png', value = 'Leaden Salute'},
@@ -252,7 +275,7 @@ function build_UI()
 	
 	AMToggle = ToggleButton{
 		x = GUI_x + 54,
-		y = GUI_y + 54 * 7,
+		y = RHGUI_y + 54,
 		var = 'useAM',
 		iconUp = 'COR/Aftermath Off.png',
 		iconDown = 'COR/Aftermath On.png',
@@ -261,7 +284,7 @@ function build_UI()
 	
 	RHClear = FunctionButton{
 		x = GUI_x + 54 * 2,
-		y = GUI_y + 54 * 7,
+		y = RHGUI_y + 54,
 		icon = 'COR/RH Clear.png',
 		command = function() windower.send_command('gs rh clear') end
 	}
@@ -283,7 +306,7 @@ function build_UI()
 	
 	RHTP = SliderButton{
 		x = GUI_x + 0,
-		y = GUI_y + 54 * 7,
+		y = RHGUI_y + 54,
 		var = "ws_tp",
 		min = 1000,
 		max = 3000,
@@ -295,7 +318,7 @@ function build_UI()
 	
 	RHWS = PassiveText({
 		x = GUI_x + 164,
-		y = GUI_y + 54 * 8,
+		y = RHGUI_y + 54 * 2,
 		text = 'RH Weaponskill: %s',
 		--var = 'weaponskill',
 		align = 'right'},
@@ -304,7 +327,7 @@ function build_UI()
 	
 	Acc_display = TextCycle{
 		x = GUI_x + 164,
-		y = GUI_y + 54 * 8 + 20,
+		y = RHGUI_y + 54 * 2 + 20,
 		var = meleeAccuracy,
 		align = 'right',
 		width = 112,
@@ -314,7 +337,7 @@ function build_UI()
 	
 	RAcc_display = TextCycle{
 		x = GUI_x + 164,
-		y = GUI_y + 54 * 8 + 20 + 32 * 1,
+		y = RHGUI_y + 54 * 2 + 20 + 32 * 1,
 		var = rangedAccuracy,
 		align = 'right',
 		width = 112,
@@ -324,7 +347,7 @@ function build_UI()
 	
 	MAcc_display = TextCycle{
 		x = GUI_x + 164,
-		y = GUI_y + 54 * 8 + 20 + 32 * 2,
+		y = RHGUI_y + 54 * 2 + 20 + 32 * 2,
 		var = magicAccuracy,
 		align = 'right',
 		width = 112,
@@ -334,7 +357,7 @@ function build_UI()
 	
 	HAcc_display = TextCycle{
 		x = GUI_x + 164,
-		y = GUI_y + 54 * 8 + 20 + 32 * 3,
+		y = RHGUI_y + 54 * 2 + 20 + 32 * 3,
 		var = hotshotAccuracy,
 		align = 'right',
 		width = 112,
@@ -342,13 +365,24 @@ function build_UI()
 	}
 	HAcc_display:draw()
 	
-	--[[Testbutton = FunctionButton{
-		x = 100,
-		y = 100,
-		icon = 'COR/Haste.png',
-		command = function() print('push') end
+	HMDisplay = TextCycle{
+		x = GUI_x + 164,
+		y = RHGUI_y + 54 * 2 + 20 + 32 * 4,
+		var = DWMode,
+		align = 'right',
+		width = 112,
+		command = function() windower.send_command('gs c update') end,
 	}
-	Testbutton:draw()]]
+	HMDisplay:draw()
+	DWDisplay = TextCycle{
+		x = GUI_x + 164,
+		y = RHGUI_y + 54 * 2 + 20 + 32 * 5,
+		var = DWLevel,
+		align = 'right',
+		width = 112,
+		command = function() DWMode:set('Manual'); windower.send_command('gs c update') end,
+	}
+	DWDisplay:draw()
 end
 
 function self_command(commandArgs)
@@ -438,6 +472,13 @@ function get_engaged_set()
 	else
 		s = sets.engaged[haste]
 	end
+	if DDMode.value == 'Hybrid' then
+		s = set_combine(s, sets.engaged.Hybrid)
+	end
+	if TH.Result then
+		s = set_combine(s, sets.TreasureHunter)
+	end
+	
 	return s
 end
 
@@ -489,9 +530,9 @@ end
 function update_gear()
 	if player.status == 'Engaged' and DDMode.value ~=  'Emergancy DT' then
 		equip(get_engaged_set())
-		if DDMode.value == 'Hybrid' then
+		--[[if DDMode.value == 'Hybrid' then
 			equip(sets.engaged.Hybrid)
-		end
+		end]]
 	else -- if we are idle
 		equip(get_idle_set())
 	end
@@ -523,7 +564,7 @@ function buff_change(buff,gain)
 		Haste_Level = 0
 	end
 	local dw_level = get_dw_level()
-	if dw_level ~= DWLevel.value then
+	if dw_level ~= DWLevel.value and DWMode.value == 'Auto' then
 		DWLevel:set(tostring(dw_level))
 		update_gear()
 	end
@@ -564,14 +605,19 @@ function precast(spell,action)
 			cancel_spell()
 			return
 		end
+		local acc = rangedAccuracy.value
+		local bullet = {
+			ammo=bullets[acc]
+		}
+		
 		if buffactive[265] or buffactive[581] then
 			if flurry == 1 then
-				equip(sets.precast.RA.Flurry1)
+				equip(set_combine(sets.precast.RA.Flurry1, bullet))
 			else
-				equip(sets.precast.RA.Flurry2)
+				equip(set_combine(sets.precast.RA.Flurry2, bullet))
 			end
 		else
-			equip(sets.precast.RA)
+			equip(set_combine(sets.precast.RA, bullet))
 		end
 		local t = ft_target()
 		if t and bit.band(t.id,0xFF000000) ~= 0 then -- highest byte of target.id indicates whether it's a play or not
@@ -666,9 +712,7 @@ function midcast(spell,action)
 	elseif spell.action_type == 'Ranged Attack' then
 		local acc = rangedAccuracy.value
 		local gun = rangedWeapon.value
-		local equipSet = set_combine(sets.midcast.RA, {
-			ammo=bullets[acc]
-		})
+		local equipSet = sets.midcast.RA
 		
 		if equipSet[gun] then
 			equipSet = equipSet[gun]
@@ -679,10 +723,16 @@ function midcast(spell,action)
 		if equipSet[acc] then
 			equipSet = equipSet[acc]
 		end
-		equip(equipSet)
+		
 		if buffactive['Triple Shot'] then
-			equip(sets.TripleShot)
+			equipSet = set_combine(equipSet, sets.TripleShot)
 		end
+		
+		if TH.Result then
+			equipSet = set_combine(equipSet, sets.TreasureHunter)
+		end
+		
+		equip(equipSet)
 	end
 end
 
