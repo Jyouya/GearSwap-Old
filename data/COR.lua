@@ -133,7 +133,8 @@ end
 function build_UI()
 	local GUI_x = 1732
 	local GUI_y = 70
-	GUI.bound.y.lower = 70
+	GUI.bound.y.lower = 70 -- override the default y bound for where GUI-lib will open boxes
+	GUI.bound.y.upper = 451
 	DT = IconButton{
 		x = GUI_x + 0,
 		y = GUI_y + 0,
