@@ -617,51 +617,51 @@ function get_sets()
 
 	sets.SIRD[1] = {
 		ammo="Staunch Tathlum +1",
-		head="Halitus Helm",
-		body="Emet Harness +1",
-		hands="Rawhide Gloves",
+		head="Futhark Bandeau +3",
+		body="Taeon Tabard",
+		hands="Regal Gauntlets",
 		legs=Carmine.Legs.PathD,
-		feet="Erilaz Greaves +1",
+		feet="Taeon Boots",
 		neck="Moonlight Necklace",
 		waist="Rumination Sash",
-		left_ear={name="Odnowa Earring",priority=15}, 
+		left_ear="Halasz Earring", 
 		right_ear={name="Odnowa Earring +1",priority=15},
 		left_ring={name="Moonlight Ring",priority=15,bag="wardrobe3"}, 
-		right_ring={name="Evanescence Ring",priority=0}, 
+		right_ring={name="Moonlight Ring",priority=15,back="wardrobe2"}, 
 		back=Ogma.Enmity,
-		maxHP=2821}
+		maxHP=2922}
 		
 	sets.SIRD[2] = {
 		ammo="Staunch Tathlum +1",
-		head="Halitus Helm",
-		body="Emet Harness +1",
-		hands="Rawhide Gloves",
+		head="Futhark Bandeau +3",
+		body="Taeon Tabard",
+		hands="Regal Gauntlets",
 		legs=Carmine.Legs.PathD,
-		feet="Erilaz Greaves +1",
+		feet="Taeon Boots",
 		neck="Moonlight Necklace",
 		waist="Rumination Sash",
-		left_ear={name="Cryptic Earring",priority=14}, 
+		left_ear="Halasz Earring", 
 		right_ear={name="Odnowa Earring +1",priority=15},
-		left_ring={name="Moonlight Ring",priority=15,bag="wardrobe3"}, 
-		right_ring={name="Evanescence Ring",priority=0}, 
+		left_ring={name="Defending Ring",priority=0}, 
+		right_ring={name="Moonlight Ring",priority=15,bag="wardrobe2"}, 
 		back=Ogma.Enmity,
-		maxHP=2761}
+		maxHP=2812}
 		
 	sets.SIRD[3] = {
 		ammo="Staunch Tathlum +1",
-		head="Halitus Helm",
-		body="Emet Harness +1",
+		head="Futhark Bandeau +3",
+		body="Taeon Tabard",
 		hands="Rawhide Gloves",
 		legs=Carmine.Legs.PathD,
-		feet="Erilaz Greaves +1",
+		feet="Taeon Boots",
 		neck="Moonlight Necklace",
 		waist="Rumination Sash",
-		left_ear={name="Cryptic Earring",priority=14}, 
+		left_ear="Halasz Earring", 
 		right_ear={name="Odnowa Earring +1",priority=15},
 		left_ring={name="Defending Ring",priority=0}, 
-		right_ring={name="Evanescence Ring",priority=0}, 
+		right_ring={name="Moonlight Ring",priority=15,bag="wardrobe2"}, 
 		back=Ogma.Enmity,
-		maxHP=2651}
+		maxHP=2682}
 	
 	sets.midcast = {}
 	
@@ -859,6 +859,25 @@ function get_sets()
 		right_ring={name="Moonlight Ring",priority=14, bag="wardrobe2"},
 		back=Ogma.FC,
 		maxHP=3064}
+		
+	sets.midcast.Barspell = {}
+	
+	sets.midcast.Barspell[1] = {
+		ammo="Staunch Tathlum +1",
+		head={name="Erilaz Galea +1",priority=0},
+		body={name="Futhark Coat +3",priority=0}, 
+		hands="Runeist's Mitons +3",
+		legs=Carmine.Legs.PathD, 
+		feet="Erilaz Greaves +1",
+		neck={name="Moonlight Necklace", priority=1},
+		waist="Flume Belt +1",
+		left_ear={name="Odnowa Earring",priority=15}, 
+		right_ear="Odnowa Earring +1",
+		left_ring={name="Moonlight Ring",priority=15, bag="wardrobe3"}, 
+		right_ring={name="Moonlight Ring",priority=14, bag="wardrobe2"},
+		back=Ogma.FC,
+		maxHP=3099
+	}
 	
 	sets.midcast['Divine Magic'] = {} -- Only divine magic RUN can cast is flash unless you /whm or /pld, so this won't really come up very often
 	
@@ -1769,6 +1788,8 @@ function midcast(spell,action)
 			set = sets.midcast[spell.name]
 		--elseif spell.name:startswith('Regen') then
 		--	set = sets.midcast.Regen
+		elseif spell.name:startswith('bar') then
+			set = sets.midcast.Barspell
 		elseif sets.midcast[spell.skill] then --check if there's a set for the skill
 			set = sets.midcast[spell.skill]
 		end -- will default to the base midcast sets if nothing is specified
