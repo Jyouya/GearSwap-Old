@@ -106,7 +106,7 @@ function setup()
 	QDMode = 'Damage'
 	DDMode = M{['description']='DD Mode', 'Normal', 'Hybrid', 'Emergancy DT'}
 	emergancyDT = M(false,'Emegancy DT')
-	roll_weapons = true
+	roll_weapons = M(true,'Use ranged/weapon swaps for rolling')
 	bullets = {['Normal']='Chrono Bullet', ['Mid']='Devastating Bullet', ['Acc']='Devastating Bullet'}
 	
 	DWMode = M{['description']='Dual Wield Mode', 'Auto', 'Manual'}
@@ -216,7 +216,7 @@ function build_UI()
 	RG = ToggleButton{
 		x = GUI_x + 54,
 		y = GUI_y + 54 * 4,
-		var = 'roll_weapons',
+		var = roll_weapons,
 		iconUp = 'COR/RollGearOff.png',
 		iconDown = 'COR/RollGearOn.png',
 	}
@@ -258,7 +258,7 @@ function build_UI()
 	}
 	SOTPToggle:draw()
 	
-	WS_Shortcuts = M{'Leaden Salute', 'Hot Shot', 'Wildfire', 'Last Stand', ''}
+	WS_Shortcuts = M{['description']='Weaponskill Shortcut UI','Leaden Salute', 'Hot Shot', 'Wildfire', 'Last Stand', ''}
 	RHShortcuts = IconButton{
 		x = GUI_x + 0,
 		y = RHGUI_y,
@@ -660,7 +660,7 @@ function precast(spell,action)
 		equip(sets.precast.Step)
 	elseif spell.type == 'CorsairRoll' and spell.name:contains('Roll') then
 		s = sets.JA['Phantom Roll']
-		if not roll_weapons then
+		if not roll_weapons.value then
 			s = set_combine(s, {main='', sub='', range=''})
 		end
 		equip(s)

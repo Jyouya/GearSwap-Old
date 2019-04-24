@@ -16,9 +16,9 @@ function build_gearsets()
 														'DEX+5',}}
 	herc.legs = {}
 	herc.legs.LastStand = { name="Herculean Trousers", augments={'Rng.Acc.+28','Weapon skill damage +4%','DEX+1','Rng.Atk.+2',}}
-	herc.legs.Leaden = { name="Herculean Trousers", augments={'Mag. Acc.+20 "Mag.Atk.Bns."+20','Phys. dmg. taken -1%','MND+2','Mag. Acc.+7','"Mag.Atk.Bns."+13',}}
+	herc.legs.Leaden = { name="Herculean Trousers", augments={'Mag. Acc.+20 "Mag.Atk.Bns."+20','Weapon skill damage +1%','INT+9','Mag. Acc.+11','"Mag.Atk.Bns."+14',}}
 	herc.hands = {}
-	herc.hands.Leaden = { name="Herculean Gloves", augments={'Mag. Acc.+20 "Mag.Atk.Bns."+20','"Fast Cast"+3','Mag. Acc.+6','"Mag.Atk.Bns."+13',}}
+	herc.hands.Leaden = { name="Herculean Gloves", augments={'Mag. Acc.+19 "Mag.Atk.Bns."+19','Weapon skill damage +1%','Mag. Acc.+13','"Mag.Atk.Bns."+14',}}
 	herc.head = {}
 	herc.head.Savage =  { name="Herculean Helm", augments={'Rng.Acc.+12','Weapon skill damage +3%','STR+6','Accuracy+15','Attack+13',}}
 	herc.head.Wildfire = { name="Herculean Helm", augments={'Mag. Acc.+16 "Mag.Atk.Bns."+16','Crit.hit rate+1','Mag. Acc.+15','"Mag.Atk.Bns."+15',}}
