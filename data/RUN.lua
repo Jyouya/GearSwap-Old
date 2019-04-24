@@ -1380,7 +1380,7 @@ function get_sets()
 	sets.JA['Battuta'] = set_combine(sets.Enmity[1], {head="Futhark Bandeau +3"})
 	sets.JA['Pflug'] = set_combine(sets.Enmity[1], {feet="Runeist Bottes +3"})
 	
-	sets.JA['Swordplay'] = {hands="Futhark Mitons"}
+	sets.JA['Swordplay'] = {hands="Futhark Mitons +3"}
 	sets.JA['Elemental Sforzo'] = {body="Futhark Coat +3"}
 	sets.JA['Vivacious Pulse'] = {head="Erilaz Galea +1"}
 	sets.JA['Embolden'] = {back="Evasionist's Cape"}
