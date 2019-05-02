@@ -673,8 +673,8 @@ function get_engaged_set() -- sets.engaged[DefenseMode].(DW or WeaponMode).Accur
 	end
 	if equipset[WeaponMode.value] then -- sets.engaged[DefenseMode].Chango or something if desired.  Can also do .mainhand.offhand if you wanna get specific
 		equipset = equipset[WeaponMode.value]
-		if equipset[OffhandMode.value] then
-			equipset = equipset[OffhandMode.value]
+		if equipset[Offhand.value] then
+			equipset = equipset[Offhand.value]
 		end		
 	end
 	if equipset.DW and WeaponTable[WeaponMode.value].type == '1H' and OffhandTable[Offhand.value].DW and (player.sub_job == 'DNC' or player.sub_job == 'NIN') then
@@ -779,14 +779,14 @@ function precast(spell, action)
 		if equipset.TP then -- sets.WS['Impulse Drive'].TP[2000].Mid.Day will be used when over 2000 TP
 			local t = 1000
 			local use_tp_set = false
-			for tp, set in ipairs(equipset.TP) do
+			for tp, set in pairs(equipset.TP) do
 				if tp > t and player.tp + (buffactive['warcry'] and 500 or 0) > tp then
 					t = tp
 					use_tp_set = true
 				end
 			end
 			if use_tp_set then
-				equipset = equipset.TP[tp]
+				equipset = equipset.TP[t]
 			end
 		end
 		if equipset[AccuracyMode.value] then
@@ -802,7 +802,8 @@ function precast(spell, action)
 			end
 		end
 		equip(equipset)
-		if Obi_WS:contains(spell.name) then
+		if Obi_WS:contains(spell.name) and (world.weather_element == spell.element or
+											world.day_element == spell.element ) then
 			equip(sets.Obi)
 		end
 	elseif spell.name:contains('Waltz') then

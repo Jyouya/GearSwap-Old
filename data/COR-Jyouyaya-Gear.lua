@@ -306,7 +306,7 @@ function build_gearsets()
 		ear1="Moonshade Earring",
 		ear2="Friomisi Earring",
 		ring1="Dingir Ring",
-		ring2="Ilabrat Ring", -- regal ring or WSD ring
+		ring2="Regal Ring", -- regal ring or WSD ring
 		back=Camulus.LeadenSalute,
 		waist="Eschan Stone",
 		}
@@ -345,7 +345,7 @@ function build_gearsets()
 	
 	sets.WS['Hot Shot'].Acc = set_combine(sets.WS['Hot Shot'].Mid, {
 		ammo="Devastating Bullet",
-		ring1="Hajduk Ring +1",
+		ring1="Regal Ring",
 		waist="K. Kachina Belt +1",
 		})
 		
@@ -373,7 +373,7 @@ function build_gearsets()
 		waist="Metalsinger Belt",
 		ear1="Moonshade Earring",
 		ear2="Ishvara Earring",
-		ring1="Shukuyu Ring",
+		ring1="Regal Ring",
 		ring2="Rufescent Ring",
 		back=Camulus.Savage}
 		
@@ -432,7 +432,7 @@ function build_gearsets()
 		feet="Meg. Jam. +2",
 		waist="K. Kachina Belt +1",
 		ring1="Hajduk Ring +1",
-		--ring2="Hajduk Ring +1",--Regal Ring
+		ring2="Regal Ring"
 		})
 		
 	sets.midcast.RA.Armageddon = set_combine(sets.midcast.RA, {})

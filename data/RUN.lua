@@ -1408,6 +1408,12 @@ function get_sets()
 	sets.JA['Swipe'] = sets.JA['Lunge']
 		
 	sets.Obi = {waist="Hachirin-no-obi"}
+	
+	---------------
+	-- Item Sets --
+	---------------
+	sets.item = {}
+	sets.item['Holy Water'] = {neck="Nicander's Necklace"}
 		
 	-------------------
 	-- Reactive Sets --
@@ -1421,7 +1427,7 @@ function get_sets()
 		left_ring="Vocane Ring",}
 		
 	sets.Cursna = {
-		--neck="Nicander's Necklace -- Don't have one yet.
+		neck="Nicander's Necklace"
 		waist="Gishdubar Sash",
 		left_ring="Purity Ring",}
 	
@@ -1765,6 +1771,10 @@ function precast(spell,action)
 			if get_runes()[world.weather_element] or get_runes()[world.day_element] then
 				equip(sets.Obi)
 			end
+		end
+	elseif spell.type == 'Item' then
+		if sets.item[spell.name] then
+			equip(sets.item[spell.name])
 		end
 	end
 end

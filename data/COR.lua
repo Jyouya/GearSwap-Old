@@ -402,7 +402,6 @@ function self_command(commandArgs)
 	if selfCommandMaps[handleCmd] then
 		selfCommandMaps[handleCmd](commandArgs)
 	end
-	
 end
 
 function handle_toggle(cmdParams)
