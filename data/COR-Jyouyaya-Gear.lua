@@ -440,7 +440,7 @@ function build_gearsets()
 	sets.midcast.RA.Armageddon.Acc = set_combine(sets.midcast.RA.Acc, {})
 	
 	sets.midcast.RA.Armageddon.AM3 = {
-		ammo="Chrono Bullet",
+		ammo="Chrono Bullet", -- Have precast calculate the midcast set and take the ammmo field from it
 		head="Meghanada Visor +2",
 		body="Meghanada Cuirie +2",
 		hands="Mummu Wrists +2",

@@ -606,8 +606,23 @@ function precast(spell,action)
 			return
 		end
 		local acc = rangedAccuracy.value
+		
+		local gun = rangedWeapon.value
+		local midSet = sets.midcast.RA
+		
+		-- Determine midcast ammo, and equip it during precast
+		if midSet[gun] then
+			midSet = midSet[gun]
+		end
+		if midSet.AM3 and buffactive['Aftermath: Lv.3'] then
+			midSet = midSet.AM3
+		end
+		if midSet[acc] then
+			midSet = midSet[acc]
+		end
+		
 		local bullet = {
-			ammo=bullets[acc]
+			ammo=midSet.ammo--bullets[acc]
 		}
 		
 		if buffactive[265] or buffactive[581] then

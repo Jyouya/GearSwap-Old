@@ -860,6 +860,56 @@ function get_sets()
 		back=Ogma.FC,
 		maxHP=3064}
 		
+	sets.midcast.Spikes = {} -- enhancing magic duration sets
+	
+	sets.midcast.Spikes[1] = {
+		ammo="Staunch Tathlum +1",
+		head={name="Erilaz Galea +1",priority=0},
+		body={name="Futhark Coat +3",priority=0}, 
+		hands={name="Regal Gauntlets",priority=15},
+		legs={name="Futhark Trousers +3",priority=15}, 
+		feet="Erilaz Greaves +1",
+		neck={name="Moonlight Necklace", priority=1},
+		waist="Flume Belt +1",
+		left_ear={name="Odnowa Earring",priority=15}, 
+		right_ear="Odnowa Earring +1",
+		left_ring={name="Moonlight Ring",priority=15, bag="wardrobe3"}, 
+		right_ring={name="Moonlight Ring",priority=14, bag="wardrobe2"},
+		back=Ogma.Lunge,
+		maxHP=3019}
+		
+	sets.midcast.Spikes[2] = {
+		ammo="Staunch Tathlum +1",
+		head={name="Erilaz Galea +1",priority=0},
+		body={name="Futhark Coat +3",priority=0}, 
+		hands={name="Regal Gauntlets",priority=15},
+		legs={name="Futhark Trousers +3",priority=15}, 
+		feet="Erilaz Greaves +1",
+		neck={name="Moonlight Necklace", priority=1},
+		waist="Flume Belt +1",
+		left_ear={name="Odnowa Earring",priority=15}, 
+		right_ear="Odnowa Earring +1",
+		left_ring={name="Defending Ring",priority=0,}, 
+		right_ring={name="Moonlight Ring",priority=14, bag="wardrobe2"},
+		back=Ogma.Lunge,
+		maxHP=2909}
+		
+	sets.midcast.Spikes[3] = {
+		ammo="Staunch Tathlum +1",
+		head={name="Erilaz Galea +1",priority=0},
+		body={name="Futhark Coat +3",priority=0}, 
+		hands={name="Regal Gauntlets",priority=15},
+		legs={name="Futhark Trousers +3",priority=15}, 
+		feet="Erilaz Greaves +1",
+		neck={name="Moonlight Necklace", priority=1},
+		waist="Flume Belt +1",
+		left_ear={name="Genmei Earring",priority=0}, 
+		right_ear="Odnowa Earring +1",
+		left_ring={name="Defending Ring",priority=0,}, 
+		right_ring={name="Moonlight Ring",priority=14, bag="wardrobe2"},
+		back=Ogma.Lunge,
+		maxHP=2809}
+		
 	sets.midcast.Barspell = {}
 	
 	sets.midcast.Barspell[1] = {
@@ -954,7 +1004,7 @@ function get_sets()
 		head={name="Futhark Bandeau +1",priority=0},
 		body={name="Futhark Coat +1",priority=0}, 
 		hands={name="Runeist's Mitons +2",priority=15},
-		legs={name="Futhark Trousers+2",priority=15}, 
+		legs={name="Futhark Trousers +2",priority=15}, 
 		feet="Turms Leggings +1",
 		neck={name="Moonlight Necklace", priority=1},
 		waist="Flume Belt +1",
@@ -970,7 +1020,7 @@ function get_sets()
 		head={name="Futhark Bandeau +1",priority=0},
 		body={name="Futhark Coat +1",priority=0}, 
 		hands={name="Runeist's Mitons +2",priority=15},
-		legs={name="Futhark Trousers+2",priority=15}, 
+		legs={name="Futhark Trousers +2",priority=15}, 
 		feet="Turms Leggings +1",
 		neck={name="Moonlight Necklace", priority=1},
 		waist="Flume Belt +1",
@@ -1427,7 +1477,7 @@ function get_sets()
 		left_ring="Vocane Ring",}
 		
 	sets.Cursna = {
-		neck="Nicander's Necklace"
+		neck="Nicander's Necklace",
 		waist="Gishdubar Sash",
 		left_ring="Purity Ring",}
 	
@@ -1798,8 +1848,10 @@ function midcast(spell,action)
 			set = sets.midcast[spell.name]
 		--elseif spell.name:startswith('Regen') then
 		--	set = sets.midcast.Regen
-		elseif spell.name:startswith('bar') then
+		elseif spell.name:startswith('Bar') then
 			set = sets.midcast.Barspell
+		elseif spell.name:contains('Spikes') then
+			set = sets.midcast.Spikes
 		elseif sets.midcast[spell.skill] then --check if there's a set for the skill
 			set = sets.midcast[spell.skill]
 		end -- will default to the base midcast sets if nothing is specified
