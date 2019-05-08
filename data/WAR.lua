@@ -404,30 +404,30 @@ function get_sets()
 	})
 	
 	sets.engaged.DW['21'] = set_combine(sets.engaged.DW, {
-		back=Cichol.DW,
+		--back=Cichol.DW,
 	})
 	
 	sets.engaged.DW['21'].Mid = set_combine(sets.engaged.DW.Mid, {
-		back=Cichol.DW,
+		--back=Cichol.DW,
 	})
 	
 	sets.engaged.DW['21'].High = set_combine(sets.engaged.DW.High, {
-		back=Cichol.DW,
+		--back=Cichol.DW,
 	})
 	
 	sets.engaged.DW['25'] = set_combine(sets.engaged.DW, {
 		ear1="Eabani Earring",
-		back=Cichol.DW
+		--back=Cichol.DW
 	})
 	
 	sets.engaged.DW['25'].Mid = set_combine(sets.engaged.DW.Mid, {
 		ear1="Eabani Earring",
-		back=Cichol.DW
+		--back=Cichol.DW
 	})
 	
 	sets.engaged.DW['25'].High = set_combine(sets.engaged.DW.High, {
 		ear1="Eabani Earring",
-		back=Cichol.DW
+		--back=Cichol.DW
 	})
 	
 	sets.engaged.Hybrid = {
@@ -683,7 +683,9 @@ function get_engaged_set() -- sets.engaged[DefenseMode].(DW or WeaponMode).Accur
 		if dw_level ~= DWLevel.value and DWMode.value == 'Auto' then
 			DWLevel:set(tostring(dw_level))
 		end
-		equipset = equipset[DWLevel.value]
+		if equipset[DWLevel.value] then
+			equipset = equipset[DWLevel.value]
+		end
 		
 		
 	end
