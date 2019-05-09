@@ -38,7 +38,7 @@ function build_gearsets()
 	-- CAPES --
 	Camulus = {}
 	Camulus.DA = { name="Camulus's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','DEX+10','"Dbl.Atk."+10','Magic dmg. taken-10%',}}
-	Camulus.rSTP = { name="Camulus's Mantle", augments={'AGI+20','Rng.Acc.+20 Rng.Atk.+20','"Store TP"+10','Damage taken-5%',}}
+	Camulus.rSTP = { name="Camulus's Mantle", augments={'AGI+20','Rng.Acc.+20 Rng.Atk.+20','AGI+10','"Store TP"+10','Damage taken-5%',}}
 	Camulus.AM3 = { name="Camulus's Mantle", augments={'AGI+20','Rng.Acc.+20 Rng.Atk.+20','AGI+10','Crit.hit rate+10','Phys. dmg. taken-10%',}}
 	
 	Camulus.Savage = { name="Camulus's Mantle", augments={'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%','Damage taken-5%',}}
@@ -427,7 +427,6 @@ function build_gearsets()
 	sets.midcast.RA.Acc = set_combine(sets.midcast.RA.Mid,{
 		ammo="Devastating Bullet",
 		body="Laksamana's Frac +3",
-		--hands="Meghanada Gloves +2",
 		legs="Laksamana's Trews +3",
 		feet="Meg. Jam. +2",
 		waist="K. Kachina Belt +1",
@@ -435,12 +434,21 @@ function build_gearsets()
 		ring2="Regal Ring"
 		})
 		
+	sets.midcast.RA.STP = set_combine(sets.midcast.RA, {
+		ammo="Devastating Bullet",
+		head="Oshosi Mask +1",
+		body="Oshosi Vest +1",
+		ear1="Dedition Earring",
+		ring1="Chirich Ring +1",
+	})
+		
 	sets.midcast.RA.Armageddon = set_combine(sets.midcast.RA, {})
 	sets.midcast.RA.Armageddon.Mid = set_combine(sets.midcast.RA.Mid, {})
 	sets.midcast.RA.Armageddon.Acc = set_combine(sets.midcast.RA.Acc, {})
+	sets.midcast.RA.Armageddon.STP = set_combine(sets.midcast.RA.STP, {})
 	
 	sets.midcast.RA.Armageddon.AM3 = {
-		ammo="Chrono Bullet", -- Have precast calculate the midcast set and take the ammmo field from it
+		ammo="Chrono Bullet",
 		head="Meghanada Visor +2",
 		body="Meghanada Cuirie +2",
 		hands="Mummu Wrists +2",

@@ -96,7 +96,7 @@ function setup()
 		}
 	
 	meleeAccuracy = M{['description']='Melee Accuracy', 'Normal', 'Mid', 'Acc'}
-	rangedAccuracy = M{['description']='Ranged Accuracy', 'Normal', 'Mid', 'Acc'}
+	rangedAccuracy = M{['description']='Ranged Accuracy', 'STP', 'Normal', 'Mid', 'Acc'}
 	magicAccuracy = M{['description']='Magic Accuracy', 'Normal', 'Mid', 'Acc'}
 	hotshotAccuracy = M{['description']='Hotshot Accuracy', 'Normal', 'Mid', 'Acc'}
 	quickdrawElement1 = M{['description']='Primary Quickdraw Element', 'Fire', 'Earth', 'Water', 'Wind', 'Ice', 'Thunder', 'Light', 'Dark'}
@@ -290,20 +290,6 @@ function build_UI()
 		command = function() windower.send_command('gs rh clear') end
 	}
 	RHClear:draw()
-	
-	--[[TP_Shortcuts = M{'1000','1500','2000'}
-	RHTP = IconButton{
-		x = GUI_x + 0,
-		y = GUI_y + 54 * 7,
-		var = TP_Shortcuts,
-		icons = {
-			{img = 'COR/1000TP.png', value = '1000'},
-			{img = 'COR/1500TP.png', value = '1500'},
-			{img = 'COR/2000TP.png', value = '2000'}
-		},
-		command = function() windower.send_command('gs rh tp %s':format(TP_Shortcuts.value)) end
-	}
-	RHTP:draw()]]
 	
 	RHTP = SliderButton{
 		x = GUI_x + 0,
