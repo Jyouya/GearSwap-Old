@@ -45,3 +45,20 @@ validate.lua
 version_history.txt
 data/win_macros.png
 data/WAR.3-27-19.lua
+data/graphics/Dem ring.png
+data/graphics/SMN/fenrir.png
+data/graphics/SMN/elementalsiphon.png
+data/graphics/SMN/diabolos.png
+data/graphics/SMN/convert.png
+data/graphics/SMN/convert-NO.png
+data/graphics/SMN/convert-AUTO.png
+data/graphics/SMN/carbuncle.png
+data/graphics/SMN/cait sith.png
+data/graphics/SMN/base.png
+data/graphics/SMN/alexander.png
+*.png
+data/Jyouya-WHM.lua
+data/SCH-Jyouya.lua
+data/SMN-Jyouya-Gear.lua
+data/thf.lua
+data/Jyouya-SMN.lua
