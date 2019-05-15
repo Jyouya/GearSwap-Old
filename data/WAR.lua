@@ -696,7 +696,7 @@ function get_engaged_set() -- sets.engaged[DefenseMode].(DW or WeaponMode).Accur
 		equipset = equipset.AM3
 	end
 	
-	if buffactive['Flash'] or buffactive['Blind'] then
+	if buffactive['Flash'] or buffactive['Blindness'] then
 		equipset = set_combine(equipset, sets.Blind)
 	end
 	
@@ -751,6 +751,7 @@ function pretarget(spell) -- Would also check range here, if we wanted to avoid 
 			cancel_spell()
 		end
 	end
+	-- TODO: cancel berserk/aggressor if they're on cooldown, so we don't drop TP.
 end
 
 function precast(spell, action)
