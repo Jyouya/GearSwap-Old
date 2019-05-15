@@ -234,7 +234,7 @@ function get_sets()
 		
 	sets.engaged.Turtle.MaxHP = {
 		ammo="Staunch Tathlum +1",
-		head="Turms Cap +3",
+		head="Turms Cap +1",
 		body="Futhark Coat +3",
 		hands="Turms Mittens +1",
 		legs="Erilaz Leg Guards +1",
@@ -1463,7 +1463,9 @@ function get_sets()
 	-- Item Sets --
 	---------------
 	sets.item = {}
-	sets.item['Holy Water'] = {neck="Nicander's Necklace"}
+	sets.item['Holy Water'] = {
+		neck="Nicander's Necklace",
+		left_ring="Purity Ring"}
 		
 	-------------------
 	-- Reactive Sets --
