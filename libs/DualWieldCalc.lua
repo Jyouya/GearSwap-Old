@@ -27,6 +27,8 @@ function Job_DW()
 		return 35
 	elseif player.main_job == 'DNC' then
 		return 35
+	elseif player.main_job == 'THF' then
+		return 30
 	elseif player.sub_job == 'NIN' then
 		return 25
 	elseif player.sub_job == 'DNC' then
