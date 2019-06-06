@@ -387,7 +387,7 @@ local ws_shortcuts = {
 	['jis'] ="Jishnu's Radiance",
 }
 
-local function resolve_shortcuts(str)
+function RHresolve_shortcuts(str)
 	for k,v in pairs(ws_shortcuts) do
 		if str:startswith(k) then
 			return v
@@ -407,7 +407,7 @@ register_unhandled_command(function (...)
 			elseif cmd == 'set' then
 				if args[1] then
 					for i,v in pairs(args) do args[i]=windower.convert_auto_trans(args[i]) end
-					weaponskill = resolve_shortcuts(args[1]:lower()) or table.concat(args," "):titlecase()
+					weaponskill = RHresolve_shortcuts(args[1]:lower()) or table.concat(args," "):titlecase()
 					windower.add_to_chat(200, "Rnghelper : Setting weaponskill to %s":format(weaponskill))
 				else
 					windower.add_to_chat(200, "Rnghelper : Clearing weaponskill.")
