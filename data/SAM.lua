@@ -35,14 +35,18 @@ end
 function get_sets()
 	setup()
 	
-	Smertrio = {}
-	Smertrio.Acc = {name="Smertrio's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','Accuracy+10','"Store TP"+10','Phys. dmg. taken -10%'}}
-	Smertrio.WSD = {name="Smertrio's Mantle", augments={'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%','Phys. dmg. taken -10%'}}
+	Smertrios = {}
+	Smertrios.Acc = {name="Smertrios's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','Accuracy+10','"Store TP"+10','Phys. dmg. taken -10%'}}
+	Smertrios.WSD = {name="Smertrios's Mantle", augments={'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%','Phys. dmg. taken -10%'}}
 		
 	Valorous = {}
+	Valorous.Head = {}
+	Valorous.Head.WSD = { name="Valorous Mask", augments={'Accuracy+22 Attack+22','Weapon skill damage +5%','Accuracy+2'}}
+	Valorous.Head.Crit = { name="Valorous Mask", augments={'Accuracy+14','Crit. hit damage +4%','STR+13','Attack+4',}}
 	Valorous.Body = {}
 	Valorous.Body.STP = {name="Valorous Mail", augments={'INT+10','MND+4','"Store TP"+9','Mag. Acc.+1 "Mag.Atk.Bns."+1'}}
 	Valorous.Body.MAB = {name="Valorous Mail", augments={'"Mag.Atk.Bns."+22','Weapon skill damage +3%','Accuracy+14 Attack+14','Mag. Acc.+17 "Mag.Atk.Bns."+17'}}
+	
 
 	sets.Obi = {waist="Hachirin-No-Obi"}
 	
@@ -63,7 +67,7 @@ function get_sets()
 	sets.JA = {}
 	
 	sets.JA['Hasso'] = {}
-	sets.JA['Meditate'] = {}
+	sets.JA['Meditate'] = {head="Wakido Kabuto"}
 	sets.JA['Warcry'] = {}
 	sets.JA['Berserk'] = {}
 	sets.JA['Tomahawk'] = {}
@@ -94,7 +98,7 @@ function get_sets()
 	
 	sets.WS = {
 		ammo="Seething Bomblet +1",
-		head="Flamma Zucchetto +2",
+		head=Valorous.Head.WSD,
 		body="Flamma Korazin +2",
 		--hands="Sulevia's Gauntlets +2",
 		--legs="Sulevia's Cuisses +2",
@@ -105,7 +109,7 @@ function get_sets()
 		ear2="Moonshade Earring",
 		ring1="Niqmaddu Ring",
 		ring2="Regal Ring",
-		back=Smertrio.WSD
+		back=Smertrios.WSD
 	}
 	
 	sets.WS.Mid = set_combine(sets.WS, {
@@ -118,10 +122,10 @@ function get_sets()
 	
 	sets.WS['Tachi: Jinpu'] = {
 		ammo="Knobkierrie",
-		head="Flamma Zucchetto +2",
+		head=Valorous.Head.WSD,
 		body=Valorous.Body.MAB,
 		hands="Founder's Gauntlets",
-		--legs=Odyssean.Legs.WS,
+		legs="Wakido Haidate +3",
 		feet="Founder's Greaves",
 		neck="Fotia Gorget",
 		waist="Fotia Belt",
@@ -129,7 +133,7 @@ function get_sets()
 		ear2="Moonshade Earring",
 		ring1="Niqmaddu Ring",
 		ring2="Regal Ring",
-		back=Smertrio.WSD
+		back=Smertrios.WSD
 	}
 	
 	
@@ -137,9 +141,11 @@ function get_sets()
 	
 	--sets.WS.Stardiver = {}
 	
-	--sets.WS['Impulse Drive'] = {} -- low TP set
-	--sets.WS['Impulse Drive'].TP = {} -- leave blank
-	--sets.WS['Impulse Drive'].TP[2000] = {} -- High TP set
+	sets.WS['Impulse Drive'] = {} -- low TP set
+	sets.WS['Impulse Drive'].TP = {} -- leave blank
+	sets.WS['Impulse Drive'].TP[2000] = set_combine(sets.WS, {
+		head=Valorous.Head.Crit
+	}) -- High TP set
 	--sets.WS['Impulse Drive'].TP[2800] = {} -- Full TP set
 	
 	-- Idle Sets --
@@ -158,7 +164,7 @@ function get_sets()
 		ear2="Infused Earring",
 		ring1="Moonlight Ring",
 		ring2="Defending Ring",
-		back=Smertrio.Acc, -- Moonlight Cape		
+		back=Smertrios.Acc, -- Moonlight Cape		
 	}
 	
 	sets.idle['Meva'] = set_combine(sets.idle.Normal, {
@@ -170,17 +176,17 @@ function get_sets()
 	sets.engaged = {
 		ammo="Ginsen",
 		head="Flamma Zucchetto +2",
-		body=Valorous.Body.STP,
-		hands="Founder's Gauntlets",
-		legs="Valorous Greaves",
+		body="Kasuga Domaru +1",
+		hands="Wakido Kote +3",
+		legs="Wakido Haidate +3",
 		feet="Flamma Gambieras +2",
-		neck="Ainia Collar",
+		neck="Moonlight Nodowa",
 		waist="Ioskeha Belt +1",
 		ear1="Dedition Earring",
 		ear2="Telos Earring",
 		ring1="Niqmaddu Ring",
 		ring2="Flamma Ring",
-		back=Smertrio.Acc
+		back=Smertrios.Acc
 	}
 	
 	sets.engaged.Mid = set_combine(sets.engaged, {
@@ -204,7 +210,7 @@ function get_sets()
 		ear2="Cessance Earring",
 		ring1="Moonlight Ring",
 		ring2="Defending Ring",
-		back=Smertrio.Acc
+		back=Smertrios.Acc
 	}
 	
 	sets.engaged.DT = {
@@ -220,7 +226,7 @@ function get_sets()
 		ear2="Odnowa Earring +1",
 		ring1={name="Moonlight Ring",priority=15,bag="wardrobe3"},
 		ring2={name="Moonlight Ring",priority=15,bag="wardrobe2"},
-		back=Smertrio.Acc
+		back=Smertrios.Acc
 	}
 	
 	-- Status Swaps --
