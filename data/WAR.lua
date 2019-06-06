@@ -107,7 +107,7 @@ function get_sets()
 		ear1="Friomisi Earring",
 		ear2="Cryptic Earring",
 		ring1="Petrov Ring",
-		ring2="Provocare Ring"
+		ring2="Eihwaz Ring"
 	}
 	
 	sets.precast = {}
@@ -365,9 +365,9 @@ function get_sets()
 		head="Flamma Zucchetto +2",
 		body=Valorous.Body.STP,
 		hands="Emicho Gauntlets +1",
-		legs=Odyssean.Legs.STP,
+		legs="Pummeler's Cuisses +3",
 		feet="Pummeler's Calligae +3",
-		neck="Ainia Collar",
+		neck="War. Beads +1",
 		waist="Ioskeha Belt +1",
 		ear1="Brutal Earring",
 		ear2={name="Suppanomimi", priority=15},
@@ -650,7 +650,8 @@ function get_weapons()
 	else
 		weps = WeaponTable[WeaponMode.value]
 		if weps.type == '1H' then
-			weps = set_combine(weps, OffhandTable[Offhand.value])	
+			weps = set_combine(weps, OffhandTable[Offhand.value])
+			--table.map(weps, print)
 		else
 			weps = set_combine(weps, sets.Grip)
 		end
