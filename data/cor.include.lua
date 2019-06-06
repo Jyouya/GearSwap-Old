@@ -9,6 +9,21 @@ weaponskills = {
 	['Last Stand']='rangedAccuracy',
 	['Wildfire']='magicAccuracy',
 	['Leaden Salute']='magicAccuracy',
+	-- RNG only skills
+	['Coronach']='rangedAccuracy',
+	['Trueflight']='magicAccuracy',
+	-- Archery
+	['Flaming Arrow']='hotshotAccuracy',
+	['Piercing Arrow']='rangedAccuracy',
+	['Dulling Arrow']='rangedAccuracy',
+	['Sidewinder']='rangedAccuracy',
+	['Blast Arrow']='rangedAccuracy',
+	['Arching Arrow']='rangedAccuracy',
+	['Empyreal Arrow']='rangedAccuracy',
+	['Refulgent Arrow']='rangedAccuracy',
+	['Apex Arrow']='rangedAccuracy',
+	['Namas Arrow']='rangedAccuracy',
+	['Jishnu\'s Radiance']='rangedAccuracy',
 	-- Sword
 	['Fast Blade']='meleeAccuracy',
 	['Burning Blade']='magicAccuracy',
@@ -33,5 +48,13 @@ weaponskills = {
 	['Energy Drain']='magicAccuracy',
 	['Evisceration']='meleeAccuracy',
 	['Aeolian Edge']='magicAccuracy',
-	['Exenterator']='meleeAccuracy',	
+	['Exenterator']='meleeAccuracy',
+	-- Axe
+	['Raging Axe']='meleeAccuracy',
+	['Smash Axe']='meleeAccuracy',
+	['Gale Axe']='meleeAccuracy',
+	['Avalange Axe']='meleeAccuracy',
+	['Rampage']='meleeAccuracy',
+	['Decimation']='meleeAccuracy',
+	['Ruinator']='meleeAccuracy'
 }
